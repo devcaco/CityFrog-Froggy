@@ -16,6 +16,18 @@ class Frog {
     this.move();
   }
 
+  render() {
+    if (this.img !== null) {
+      this.ctx.drawImage(
+        this.img,
+        this.posX,
+        this.posY,
+        this.imgWidth,
+        this.imgHeight
+      );
+    }
+  }
+
   move(direction) {
     switch (direction) {
       case 'ArrowUp':
@@ -37,22 +49,8 @@ class Frog {
         if (this.posX > 0) this.posX -= game.gridSize;
         break;
       default:
-        console.log('else');
         this.img.src = './images/frogger-up.png';
         break;
     }
-    this.ctx.fillStyle = 'lightblue';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fill();
-
-    this.img.onload = () => {
-      this.ctx.drawImage(
-        this.img,
-        this.posX,
-        this.posY,
-        this.imgWidth,
-        this.imgHeight
-      );
-    };
   }
 }
