@@ -1,4 +1,4 @@
-class Frog {
+class Froggy {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
@@ -12,8 +12,7 @@ class Frog {
 
   create() {
     this.img = new Image();
-    this.img.src = './images/frogger-up.png';
-    this.move();
+    this.img.src = './images/froggy-up.png';
   }
 
   render() {
@@ -31,26 +30,31 @@ class Frog {
   move(direction) {
     switch (direction) {
       case 'ArrowUp':
-        this.img.src = './images/frogger-up.png';
+        this.img.src = './images/froggy-up.png';
         if (this.posY > 0) this.posY -= game.gridSize;
         break;
       case 'ArrowDown':
-        this.img.src = './images/frogger-down.png';
+        this.img.src = './images/froggy-down.png';
         if (this.posY + this.imgHeight < this.canvas.height)
           this.posY += game.gridSize;
         break;
       case 'ArrowRight':
-        this.img.src = './images/frogger-right.png';
+        this.img.src = './images/froggy-right.png';
         if (this.posX + this.imgWidth < this.canvas.width)
           this.posX += game.gridSize;
         break;
       case 'ArrowLeft':
-        this.img.src = './images/frogger-left.png';
+        this.img.src = './images/froggy-left.png';
         if (this.posX > 0) this.posX -= game.gridSize;
         break;
       default:
-        this.img.src = './images/frogger-up.png';
+        this.img.src = './images/froggy-up.png';
         break;
     }
+  }
+
+  reset() {
+    this.posX = (this.canvas.width - this.imgWidth) / 2;
+    this.posY = this.canvas.height - this.imgHeight;
   }
 }
