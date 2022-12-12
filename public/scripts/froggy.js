@@ -54,6 +54,8 @@ class Froggy {
   }
 
   reset() {
+    // console.log('resetting froggy position')
+    this.img.src = './images/froggy-up.png';
     this.posX = (this.canvas.width - this.imgWidth) / 2;
     this.posY = this.canvas.height - this.imgHeight;
   }

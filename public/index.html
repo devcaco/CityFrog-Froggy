@@ -4,12 +4,27 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>|| CityFrog ||</title>
+    <title>| CityFrog | Froggy</title>
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
   <body>
-    <div class="game-container">
-      <canvas id="game-canvas"></canvas>
+    <div class="game__container">
+      <div class="game__container--header">
+        <div class="game__container--header-left">
+          <!-- TODO: HELP / SETTINGS BUTTONS -->
+          <div class="game__container--header--left-settings"></div>
+        </div>
+        <div class="game__container--header-logo">
+          <img src="./images/logo.png" alt="City Frog - Froggy" />
+        </div>
+        <div class="game__container--header-right">
+          <!-- TODO: SCORE/LIVES DISPLAY-->
+          <div class="game__container--header--right-score"></div>
+          <div class="game__container--header--right-lives"></div>
+        </div>
+      </div>
+      <canvas class="game__container--canvas" id="game-canvas"></canvas>
+      <div class="game__container--info-bar">adasdada</div>
     </div>
     <script src="./scripts/common.js"></script>
     <script src="./scripts/froggy.js"></script>

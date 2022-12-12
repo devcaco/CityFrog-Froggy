@@ -1,12 +1,46 @@
-.game-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    height: 100vh;
+.game__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  align-items: center;
+  align-content: center;
+  /* height: 100vh; */
+}
+.game__container--header {
+  display: flex;
+  width: 750px;
+  margin: 0 auto;
+  justify-content: center;
+}
+.game__container--header > div {
+  flex: 1;
+}
+.game__container--header-left {
+  display: flex;
+}
+.game__container--header-logo {
+}
+.game__container--header-logo img {
+  height: 200px;
+}
+.game__container--header-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.game__container--header--right-lives img {
+  height: 30px;
+}
+.game__container--header-right-lives {
+  /* display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    align-content: flex-end; */
 }
 #game-canvas {
-    border: 1px solid #000;
-    height: auto;
-    box-sizing: border-box;
+  border: 1px solid #000;
+  height: auto;
+  box-sizing: border-box;
 }

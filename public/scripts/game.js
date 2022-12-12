@@ -9,21 +9,23 @@ class Game {
     this.gridSize = 50;
     this.lives = 3;
     this.score = 0;
-    this.level = 1;
+    this.level = 2;
     this.froggy = new Froggy(this.canvas);
     this.froggy.create();
     this.timer = null;
     this.obstacles = [];
     this.leafs = [];
     this.leafsCollected = [];
-    (this.bonus = []), (this.bonusCollected = []);
+    this.animate = true;
+    this.bonus = [];
+    this.bonusCollected = [];
     this.keyBind();
   }
 
   keyBind() {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
-      this.froggy.move(e.code);
+      if (this.animate) this.froggy.move(e.code);
     });
   }
 
@@ -66,36 +68,48 @@ class Game {
     const levels = {
       level1: [
         {
-          speed: 1.5,
+          speed: 2.5,
           maxItems: 5,
         },
-        null,
-        null,
+
+        {
+          speed: 4,
+          maxItems: 2,
+        },
+        {
+          speed: 2.5,
+          maxItems: 5,
+        },
+        {
+          speed: 6,
+          maxItems: 2,
+        },
         {
           speed: 2.5,
           maxItems: 2,
         },
-        null,
       ],
       level2: [
         {
-          speed: 2.0,
-          maxItems: 5,
+          speed: 2.5,
+          maxItems: 2,
         },
         {
-          speed: 2,
-          maxItems: 5,
-        },
-        ,
-        {
-          speed: 4,
-          maxItems: 3,
+          speed: 2.5,
+          maxItems: 2,
         },
         {
-          speed: 3,
-          maxItems: 5,
+          speed: 8.5,
+          maxItems: 4,
         },
-        null,
+        {
+          speed: 2.5,
+          maxItems: 2,
+        },
+        {
+          speed: 2.5,
+          maxItems: 2,
+        },
       ],
     };
 
@@ -134,7 +148,7 @@ class Game {
   renderObstacles() {
     for (let i = 0; i < this.obstacles.length; i++) {
       this.obstacles[i].render();
-      this.obstacles[i].move();
+      if (this.animate) this.obstacles[i].move();
     }
   }
 
@@ -170,10 +184,22 @@ class Game {
       let fx2 = this.froggy.posX + this.froggy.imgWidth;
 
       if (fx1 > ox1 && fx2 < ox2) {
-        this.froggy.reset();
+        this.animate = false;
         this.lives--;
+        this.writeText('Ouuuch');
+        this.pauseAnimation(500);
+        this.updateLivesDisplay();
+        this.froggy.reset();
       }
     });
+  }
+
+  pauseAnimation(time) {
+    this.animate = false;
+    setTimeout(() => {
+      this.animate = true;
+      this.gameLoop();
+    }, time || 1000);
   }
 
   collectLeafs() {
@@ -186,13 +212,35 @@ class Game {
     });
   }
 
+  writeText(text) {
+    this.ctx.font = 'normal bold 18px arial';
+    this.ctx.fillStyle = '#fff';
+    let posX = this.canvas.width / 2;
+    let posY = 30;
+    this.ctx.fillText(text, posX, posY);
+  }
+
+  updateLivesDisplay() {
+    let html = document.querySelector('.game__container--header--right-lives');
+    html.innerHTML = '';
+    for (let i = 0; i < this.lives; i++) {
+      let img = document.createElement('img');
+      img.src = './images/froggy-up.png';
+      img.alt = 'lives';
+      html.appendChild(img);
+    }
+  }
+
   gameLoop() {
+    if (!this.animate) return;
     this.renderBackground();
     this.renderLeafs();
+    // this.updateLivesDisplay();
     this.froggy.render();
     this.renderObstacles();
     this.checkCollision();
     this.collectLeafs();
+
     requestAnimationFrame(() => {
       this.gameLoop();
     });
