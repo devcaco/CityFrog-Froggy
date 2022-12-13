@@ -15,6 +15,7 @@ class Game {
     this.lives = 4;
     this.score = 0;
     this.currentLevel = 1;
+    this.levelup = false;
     this.froggy = new Froggy(this.canvas);
     this.timer = null;
     this.keyBind();
@@ -79,6 +80,18 @@ class Game {
       this.ctx.lineTo(canvas.width, game.gridSize * (i + 1));
       this.ctx.stroke();
     }
+    // Display Current Level Number
+    if (this.state === 'playing') {
+      this.ctx.fillStyle = 'white';
+      this.ctx.font = '18px Arial';
+      this.ctx.textAlign = 'right';
+      this.ctx.textBaseline = 'top';
+      this.ctx.fillText(
+        `level - ${this.currentLevel}`,
+        game.canvas.width - 15,
+        15
+      );
+    }
   }
 
   renderInitialScreen() {
@@ -134,27 +147,20 @@ class Game {
     let goldenLeaf = new Sprite('golden-leaf.png', 50, 50, 900, 900);
     goldenLeaf.posX = posX;
     goldenLeaf.posY = 0;
-    // goldenLeaf.render();
     if (
       this.levels[this.currentLevel - 1].leafs.length ===
       this.levels[this.currentLevel - 1].leafsCollected.length
     ) {
       goldenLeaf.render();
+      //check if Froggy reaches golden leaf
       if (
         this.froggy.posX === goldenLeaf.posX &&
         this.froggy.posY === goldenLeaf.posY
       ) {
-        //   this.animate = false;
-        //   this.state = 'levelcomplete';
-        this.pauseAnimation(2000);
-        setTimeout(() => {
-          this.levelup();
-          this.setLeafsDisplay();
-          console.log('LEVEL COMPLETE');
-        }, 1000);
+        this.pauseAnimation(1500);
+        this.levelup = true;
       }
     }
-    //check if Froggy reaches golden leaf
   }
   pauseAnimation(time) {
     this.animate = false;
@@ -165,11 +171,15 @@ class Game {
   }
 
   writeText(text) {
+    this.ctx.fillStyle = 'rgba(0, 0, 0, .5)';
+    this.ctx.rect(this.froggy.posX - 25, this.froggy.posY + 50, 100, 35);
+    this.ctx.fill();
     this.ctx.font = 'normal bold 18px arial';
     this.ctx.fillStyle = '#fff';
     let posX = this.canvas.width / 2;
     let posY = 30;
-    this.ctx.fillText(text, posX, posY);
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(text, this.froggy.posX + 25, this.froggy.posY + 60);
   }
 
   updateLivesDisplay() {
@@ -214,10 +224,35 @@ class Game {
     }
   }
 
-  levelup() {
-    this.currentLevel++;
-    this.froggy.reset();
-    this.setLeafsDisplay(true);
+  changeLevels() {
+    console.log('leveling-up');
+    this.levelup = false;
+    this.ctx.fillStyle = 'rgba(208, 80, 32, .9)';
+    this.ctx.strokeStyle = '#fff';
+    this.ctx.lineWidth = 5;
+    this.ctx.rect(
+      300,
+      200,
+      this.canvas.width / 2 - 150,
+      this.canvas.height / 2 - 100
+    );
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    this.ctx.font = 'normal bold 18px arial';
+    this.ctx.fillStyle = '#fff';
+    let posX = this.canvas.width / 2;
+    let posY = this.canvas.height / 2;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText(`LEVEL ${this.currentLevel} COMPLETE`, posX - 10, posY);
+
+    setTimeout(() => {
+      this.currentLevel < 5 ? this.currentLevel++ : (this.currentLevel = 1);
+      this.froggy.reset();
+      this.setLeafsDisplay(true);
+      this.setLeafsDisplay();
+    }, 1400);
   }
 
   reset() {
@@ -236,11 +271,12 @@ class Game {
       this.renderInitialScreen();
     } else if (this.state === 'playing') {
       this.renderGoldenLeaf();
-      this.froggy.render();
       this.renderLeafs();
+      this.froggy.render();
       this.renderCars();
       this.froggy.checkCollision();
       this.levels[this.currentLevel - 1].collectLeafs();
+      if (this.levelup) this.changeLevels();
     } else if (this.state === 'gameover') {
       this.renderGameOverScreen();
       return;
