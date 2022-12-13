@@ -13,6 +13,7 @@ class Sprite {
     this.clipH = clipH || 400;
     this.collected = false;
     this.visible = true;
+    this.interval = null;
     this.create();
   }
 

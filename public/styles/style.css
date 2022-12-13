@@ -9,7 +9,7 @@
 }
 .game__container--header {
   display: flex;
-  width: 750px;
+  width: 950px;
   margin: 0 auto;
   justify-content: center;
 }
@@ -18,8 +18,18 @@
 }
 .game__container--header-left {
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* align-items: flex-start; */
+}
+.game__container--header--left-leafs {
+  display: flex;
+}
+.game__container--header--left-leafs img {
+  height: 30px;
 }
 .game__container--header-logo {
+  text-align: center;
 }
 .game__container--header-logo img {
   height: 200px;
@@ -43,4 +53,18 @@
   border: 1px solid #000;
   height: auto;
   box-sizing: border-box;
+}
+
+.greyscaled {
+  filter: grayscale(100%);
+}
+
+.building {
+  display: none;
+  position: absolute;
+  top: 140px;
+}
+
+.building img {
+  height: 120px;
 }

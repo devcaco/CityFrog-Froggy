@@ -25,7 +25,7 @@ class Level {
       switch (this.dificulty) {
         case 1:
           speed = getRandomInt(1, 3, 2);
-          maxItems = getRandomInt(1, 5);
+          maxItems = getRandomInt(10, 15);
           break;
         case 2:
           speed = getRandomInt(2, 4, 2);
@@ -73,15 +73,15 @@ class Level {
         (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
       // this.moveLeaf(leaf);
       this.leafs.push(leaf);
-      setInterval(() => {
-        // this.moveLeaf(this.leafs[i]);
+      this.leafs.interval = setInterval(() => {
+        this.moveLeaf(this.leafs[i]);
       }, getRandomInt(7000, 10000));
     }
   }
 
   moveLeaf(leaf) {
     let temp = (game.canvas.width - 50) / 50;
-    let ran = getRandomInt(0, temp);
+    let ran = getRandomInt(0, temp) * 50;
     leaf.posX = ran;
     leaf.posY =
       getRandomInt(1, 5) * 100 -
@@ -90,9 +90,16 @@ class Level {
 
   collectLeafs() {
     this.leafs.forEach((leaf) => {
-      if (game.froggy.posX === leaf.posX && game.froggy.posY === leaf.posY) {
-        this.leafsCollected.push(leaf);
+      if (
+        game.froggy.posX === leaf.posX &&
+        game.froggy.posY === leaf.posY &&
+        !leaf.collected
+      ) {
         leaf.visible = false;
+        leaf.collected = true;
+        clearInterval(leaf.interval);
+        this.leafsCollected.push(leaf);
+        game.updateLeafsDisplay();
       }
     });
   }
