@@ -1,13 +1,17 @@
 class Level {
-  constructor(dificulty, activeLanes) {
+  constructor(dificulty, activeLanes, nroOfLeafs) {
     this.dificulty = dificulty || 1;
     this.activeLanes = activeLanes;
+    this.nroOfLeafs = nroOfLeafs || 3;
     this.lanes = [];
-    this.getLanes();
-    this.getLanesCars();
+    this.leafs = [];
+    this.leafsCollected = [];
+    this.setLanes();
+    this.setLanesCars();
+    this.setLeafs();
   }
 
-  getLanes() {
+  setLanes() {
     let speed;
     let direction;
     let maxItems;
@@ -37,7 +41,8 @@ class Level {
     }
     shuffle(this.lanes);
   }
-  getLanesCars() {
+
+  setLanesCars() {
     for (let i = 0, index = 0; i < this.lanes.length; i++) {
       if (!this.lanes[i]) continue;
       let posY = i * 2 + 1;
@@ -52,8 +57,44 @@ class Level {
         clipY = arr[index];
       }
       index++;
-      this.lanes[i].getCars(clipY, posY);
+      this.lanes[i].addCar(clipY, posY);
     }
+  }
+
+  setLeafs() {
+    let temp = (game.canvas.width - 50) / 50;
+
+    for (let i = 0; i < this.nroOfLeafs; i++) {
+      let ran = getRandomInt(0, temp) * 50;
+      const leaf = new Sprite('leaf.png', 50, 50, 840, 399);
+      leaf.posX = ran;
+      leaf.posY =
+        getRandomInt(1, 5) * 100 -
+        (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
+      // this.moveLeaf(leaf);
+      this.leafs.push(leaf);
+      setInterval(() => {
+        // this.moveLeaf(this.leafs[i]);
+      }, getRandomInt(7000, 10000));
+    }
+  }
+
+  moveLeaf(leaf) {
+    let temp = (game.canvas.width - 50) / 50;
+    let ran = getRandomInt(0, temp);
+    leaf.posX = ran;
+    leaf.posY =
+      getRandomInt(1, 5) * 100 -
+      (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
+  }
+
+  collectLeafs() {
+    this.leafs.forEach((leaf) => {
+      if (game.froggy.posX === leaf.posX && game.froggy.posY === leaf.posY) {
+        this.leafsCollected.push(leaf);
+        leaf.visible = false;
+      }
+    });
   }
 }
 
@@ -65,7 +106,7 @@ class Lane {
     this.cars = [];
   }
 
-  getCars(clipY, posY) {
+  addCar(clipY, posY) {
     let totalGapLength = 0;
     let laneIndex = posY;
 

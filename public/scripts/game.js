@@ -13,7 +13,7 @@ class Game {
     this.levels = [];
     this.lives = 4;
     this.score = 0;
-    this.currentLevel = 2;
+    this.currentLevel = 3;
     this.froggy = new Froggy(this.canvas);
     this.timer = null;
     this.obstacles = [];
@@ -34,10 +34,17 @@ class Game {
 
   start() {
     this.timer = new Date();
-    this.generateLevels();
-    this.getLeafs();
+    this.createLevels();
     this.gameLoop();
-    // console.log(this.levels[this.currentLevel - 1]);
+    console.log(this.levels[this.currentLevel - 1]);
+  }
+
+  createLevels() {
+    this.levels.push(new Level(1, 3));
+    this.levels.push(new Level(2, 3));
+    this.levels.push(new Level(2, 4, 4));
+    this.levels.push(new Level(3, 3));
+    this.levels.push(new Level(3, 5));
   }
 
   renderBackground() {
@@ -68,14 +75,6 @@ class Game {
     }
   }
 
-  generateLevels() {
-    this.levels.push(new Level(1, 3));
-    this.levels.push(new Level(2, 3));
-    this.levels.push(new Level(2, 4));
-    this.levels.push(new Level(3, 3));
-    this.levels.push(new Level(3, 5));
-  }
-
   renderCars() {
     for (let i = 0; i < this.levels[this.currentLevel - 1].lanes.length; i++) {
       if (!this.levels[this.currentLevel - 1].lanes[i]) continue;
@@ -90,22 +89,8 @@ class Game {
     }
   }
 
-  getLeafs() {
-    let num = (this.canvas.width - 50) / 50;
-
-    for (let i = 0; i < 3; i++) {
-      let ran = getRandomInt(0, num) * 50;
-      const leaf = new Sprite('leaf.png', 50, 50, 840, 399);
-      leaf.posX = ran;
-      leaf.posY =
-        getRandomInt(1, 5) * 100 -
-        (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
-      this.leafs.push(leaf);
-    }
-  }
-
   renderLeafs() {
-    this.leafs.forEach((leaf) => leaf.render());
+    this.levels[this.currentLevel - 1].leafs.forEach((leaf) => leaf.render());
   }
 
   pauseAnimation(time) {
@@ -114,16 +99,6 @@ class Game {
       this.animate = true;
       this.gameLoop();
     }, time || 1000);
-  }
-
-  collectLeafs() {
-    this.leafs.forEach((leaf) => {
-      if (this.froggy.posX === leaf.posX && this.froggy.posY === leaf.posY) {
-        this.leafsCollected.push(leaf);
-        leaf.collected = true;
-        leaf.visible = false;
-      }
-    });
   }
 
   writeText(text) {
@@ -148,11 +123,11 @@ class Game {
   gameLoop() {
     if (!this.animate) return;
     this.renderBackground();
-    this.froggy.render();
     this.renderLeafs();
+    this.froggy.render();
     this.renderCars();
     this.froggy.checkCollision();
-    this.collectLeafs();
+    this.levels[this.currentLevel - 1].collectLeafs();
 
     requestAnimationFrame(() => {
       this.gameLoop();

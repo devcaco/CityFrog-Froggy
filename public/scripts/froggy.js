@@ -53,7 +53,7 @@ class Froggy {
     }
   }
   checkCollision() {
-    let carsArr = [];
+    let carsArr = []; //get All the cars currently on all lanes
     for (let i = 0; i < game.levels[game.currentLevel - 1].lanes.length; i++) {
       if (!game.levels[game.currentLevel - 1].lanes[i]) continue;
       for (
@@ -65,19 +65,25 @@ class Froggy {
       }
     }
 
+    //get cars only on froggy's Lane
     let carRow = carsArr.filter((car) => {
-      let posY = this.posY % 100 === 0 ? this.posY - 50 : this.posY;
-      return car.posY === posY;
+      let temp = this.posY % 100 === 0 ? this.posY - 50 : this.posY;
+      return car.posY === temp;
     });
 
+    //check cars on froggy's lane if they collided with froggy
     carRow.forEach((car) => {
-      let ox1 = car.posX;
-      let ox2 = car.posX + car.width;
+      //get car's coordinates range
+      let cx1 = car.posX;
+      let cx2 = car.posX + car.width;
 
+      //get froggy's coordinates range
       let fx1 = this.posX;
       let fx2 = this.posX + this.imgWidth;
 
-      if (fx1 > ox1 && fx2 < ox2 && game.animate) {
+      //check coordinates for collision
+      if (fx1 > cx1 && fx2 < cx2 && game.animate) {
+        //collision detected!
         game.animate = false;
         game.lives--;
         game.updateLivesDisplay();
