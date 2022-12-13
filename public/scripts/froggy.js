@@ -52,9 +52,43 @@ class Froggy {
         break;
     }
   }
+  checkCollision() {
+    let carsArr = [];
+    for (let i = 0; i < game.levels[game.currentLevel - 1].lanes.length; i++) {
+      if (!game.levels[game.currentLevel - 1].lanes[i]) continue;
+      for (
+        let e = 0;
+        e < game.levels[game.currentLevel - 1].lanes[i].cars.length;
+        e++
+      ) {
+        carsArr.push(game.levels[game.currentLevel - 1].lanes[i].cars[e]);
+      }
+    }
+
+    let carRow = carsArr.filter((car) => {
+      let posY = this.posY % 100 === 0 ? this.posY - 50 : this.posY;
+      return car.posY === posY;
+    });
+
+    carRow.forEach((car) => {
+      let ox1 = car.posX;
+      let ox2 = car.posX + car.width;
+
+      let fx1 = this.posX;
+      let fx2 = this.posX + this.imgWidth;
+
+      if (fx1 > ox1 && fx2 < ox2 && game.animate) {
+        game.animate = false;
+        game.lives--;
+        game.updateLivesDisplay();
+        game.writeText('Ouuuch');
+        game.pauseAnimation(500);
+        this.reset();
+      }
+    });
+  }
 
   reset() {
-    // console.log('resetting froggy position')
     this.img.src = './images/froggy-up.png';
     this.posX = (this.canvas.width - this.imgWidth) / 2;
     this.posY = this.canvas.height - this.imgHeight;

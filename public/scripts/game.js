@@ -7,19 +7,22 @@ class Game {
     this.canvas.width = this.canvasWidth;
     this.canvas.height = this.canvasHeight;
     this.gridSize = 50;
-    this.lives = 3;
+    this.animate = true;
+    this.nroOfLevels = 5;
+    this.nroOfLanes = 5;
+    this.levels = [];
+    this.lives = 4;
     this.score = 0;
-    this.level = 2;
+    this.currentLevel = 2;
     this.froggy = new Froggy(this.canvas);
-    this.froggy.create();
     this.timer = null;
     this.obstacles = [];
     this.leafs = [];
     this.leafsCollected = [];
-    this.animate = true;
     this.bonus = [];
     this.bonusCollected = [];
     this.keyBind();
+    this.froggy.create();
   }
 
   keyBind() {
@@ -31,9 +34,10 @@ class Game {
 
   start() {
     this.timer = new Date();
-    this.getObstacles();
+    this.generateLevels();
     this.getLeafs();
     this.gameLoop();
+    // console.log(this.levels[this.currentLevel - 1]);
   }
 
   renderBackground() {
@@ -64,91 +68,25 @@ class Game {
     }
   }
 
-  getObstacles() {
-    const levels = {
-      level1: [
-        {
-          speed: 2.5,
-          maxItems: 5,
-        },
-
-        {
-          speed: 4,
-          maxItems: 2,
-        },
-        {
-          speed: 2.5,
-          maxItems: 5,
-        },
-        {
-          speed: 6,
-          maxItems: 2,
-        },
-        {
-          speed: 2.5,
-          maxItems: 2,
-        },
-      ],
-      level2: [
-        {
-          speed: 2.5,
-          maxItems: 2,
-        },
-        {
-          speed: 2.5,
-          maxItems: 2,
-        },
-        {
-          speed: 8.5,
-          maxItems: 4,
-        },
-        {
-          speed: 2.5,
-          maxItems: 2,
-        },
-        {
-          speed: 2.5,
-          maxItems: 2,
-        },
-      ],
-    };
-
-    let rows = levels[`level${this.level}`];
-    let index = 1;
-    let totalGaps = 0;
-    let clipY = 0;
-
-    for (let i = 0; i < rows.length; i++) {
-      index += 2;
-      if (!rows[i]) continue;
-      if (i % 2 != 0) rows[i].speed *= -1;
-      totalGaps = 0;
-      clipY = 400 * i;
-      clipY %= 2000;
-      for (let e = 0; e < 5; e++) {
-        if (totalGaps + 150 > this.canvas.width) break;
-        if (e + 1 > rows[i].maxItems) break;
-        let sprite = new Sprite();
-        let gap = getRandomInt(20, 200);
-        e == 0 ? (totalGaps = 0) : (totalGaps += sprite.width + gap);
-        sprite.posX = totalGaps;
-        sprite.posY = this.canvas.height - this.gridSize * index;
-
-        sprite.clipX = 700 * e;
-        sprite.clipX %= 2800;
-
-        sprite.clipY = clipY;
-
-        sprite.speed = rows[i].speed;
-        this.obstacles.push(sprite);
-      }
-    }
+  generateLevels() {
+    this.levels.push(new Level(1, 3));
+    this.levels.push(new Level(2, 3));
+    this.levels.push(new Level(2, 4));
+    this.levels.push(new Level(3, 3));
+    this.levels.push(new Level(3, 5));
   }
 
-  renderObstacles() {
-    for (let i = 0; i < this.obstacles.length; i++) {
-      this.obstacles[i].render();
-      if (this.animate) this.obstacles[i].move();
+  renderCars() {
+    for (let i = 0; i < this.levels[this.currentLevel - 1].lanes.length; i++) {
+      if (!this.levels[this.currentLevel - 1].lanes[i]) continue;
+      for (
+        let e = 0;
+        e < this.levels[this.currentLevel - 1].lanes[i].cars.length;
+        e++
+      ) {
+        this.levels[this.currentLevel - 1].lanes[i].cars[e].render();
+        this.levels[this.currentLevel - 1].lanes[i].cars[e].move();
+      }
     }
   }
 
@@ -158,40 +96,16 @@ class Game {
     for (let i = 0; i < 3; i++) {
       let ran = getRandomInt(0, num) * 50;
       const leaf = new Sprite('leaf.png', 50, 50, 840, 399);
-      leaf.posY =
-        getRandomInt(1, 5) * 100 - (leaf.posX < 500 ? leaf.height : 0);
       leaf.posX = ran;
+      leaf.posY =
+        getRandomInt(1, 5) * 100 -
+        (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
       this.leafs.push(leaf);
     }
   }
 
   renderLeafs() {
     this.leafs.forEach((leaf) => leaf.render());
-  }
-
-  checkCollision() {
-    let rowObstacles = this.obstacles.filter((obst) => {
-      let posY =
-        this.froggy.posY % 100 === 0 ? this.froggy.posY - 50 : this.froggy.posY;
-      return obst.posY === posY;
-    });
-
-    rowObstacles.forEach((obst) => {
-      let ox1 = obst.posX;
-      let ox2 = obst.posX + obst.width;
-
-      let fx1 = this.froggy.posX;
-      let fx2 = this.froggy.posX + this.froggy.imgWidth;
-
-      if (fx1 > ox1 && fx2 < ox2) {
-        this.animate = false;
-        this.lives--;
-        this.writeText('Ouuuch');
-        this.pauseAnimation(500);
-        this.updateLivesDisplay();
-        this.froggy.reset();
-      }
-    });
   }
 
   pauseAnimation(time) {
@@ -234,11 +148,10 @@ class Game {
   gameLoop() {
     if (!this.animate) return;
     this.renderBackground();
-    this.renderLeafs();
-    // this.updateLivesDisplay();
     this.froggy.render();
-    this.renderObstacles();
-    this.checkCollision();
+    this.renderLeafs();
+    this.renderCars();
+    this.froggy.checkCollision();
     this.collectLeafs();
 
     requestAnimationFrame(() => {

@@ -9,10 +9,11 @@ window.requestAnimFrame = (function () {
   );
 })();
 
-getRandomInt = function (min, max) {
+getRandomInt = function (min, max, round = 0) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+  let result = Math.random() * (max - min) + min;
+  return Number(result.toFixed(round));
 };
 
 getRandomColor = function () {
@@ -20,4 +21,15 @@ getRandomColor = function () {
   var green = getRandomInt(0, 257);
   var blue = getRandomInt(0, 257);
   return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
+};
+
+shuffle = (array) => {
+  let oldElement;
+  for (let i = array.length - 1; i > 0; i--) {
+    let rand = Math.floor(Math.random() * (i + 1));
+    oldElement = array[i];
+    array[i] = array[rand];
+    array[rand] = oldElement;
+  }
+  return array;
 };
