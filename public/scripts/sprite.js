@@ -39,13 +39,16 @@ class Sprite {
     }
   }
   move() {
+    this.posX = +this.posX.toFixed(2);
     if (this.speed > 0)
-      if (this.posX < game.canvas.width) this.posX += this.speed;
+      if (this.posX <= game.canvas.width) this.posX += this.speed;
       else this.posX = this.width * -1;
     else {
-      if (this.posX < 0 - this.width)
-        this.posX = game.canvas.width + this.width;
-      else this.posX += this.speed;
+      if (this.posX >= this.width * -1) this.posX += this.speed;
+      // this.posX = game.canvas.width + this.width;
+      // else this.posX += this.speed;
+      else this.posX = game.canvas.width;
     }
+    // console.log(this.posX, this.clipY, this.clipX);
   }
 }

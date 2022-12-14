@@ -11,6 +11,7 @@ class Game {
     this.animate = true;
     this.nroOfLevels = 5;
     this.nroOfLanes = 5;
+    this.horizontalWrap = false;
     this.levels = [];
     this.lives = 4;
     this.score = 0;
@@ -39,6 +40,7 @@ class Game {
   }
 
   start() {
+    console.log('starting');
     this.createLevels();
     this.gameLoop();
     console.log(this.levels[this.currentLevel - 1]);
@@ -119,9 +121,7 @@ class Game {
       this.ctx.textAlign = 'left';
       this.ctx.textBaseline = 'alphabetic';
       this.ctx.fillText(
-        `time - ${(this.levels[this.currentLevel - 1].timeLimit / 10).toFixed(
-          1
-        )}`,
+        `time - ${(this.levels[this.currentLevel - 1].timer / 10).toFixed(1)}`,
         15,
         this.canvasHeight - 15
       );

@@ -42,10 +42,22 @@ class Froggy {
         this.img.src = './images/froggy-right.png';
         if (this.posX + this.imgWidth < this.canvas.width)
           this.posX += game.gridSize;
+        else {
+          if (game.horizontalWrap) {
+            if (this.posX !== this.canvas.width) this.posX += game.gridSize;
+            else this.posX = 0 - game.gridSize;
+          }
+        }
         break;
       case 'ArrowLeft':
         this.img.src = './images/froggy-left.png';
         if (this.posX > 0) this.posX -= game.gridSize;
+        else {
+          if (game.horizontalWrap) {
+            if (this.posX === 0) this.posX -= game.gridSize;
+            else this.posX = this.canvas.width;
+          }
+        }
         break;
       default:
         this.img.src = './images/froggy-up.png';

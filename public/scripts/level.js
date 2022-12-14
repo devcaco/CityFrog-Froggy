@@ -4,7 +4,8 @@ class Level {
     this.activeLanes = activeLanes;
     this.nroOfLeafs = nroOfLeafs || 3;
     this.lanes = [];
-    this.timeLimit = timeLimit || 200;
+    this.timeLimit = timeLimit || 600;
+    this.timer = this.timeLimit;
     this.timerID = null;
     this.leafs = [];
     this.leafsCollected = [];
@@ -16,23 +17,17 @@ class Level {
   levelTimer(mode) {
     if (mode === 'start') {
       this.timerID = setInterval(() => {
-        if (this.timeLimit <= 0) {
-          this.timeLimit = 200;
+        if (this.timer <= 0) {
+          this.timer = this.timeLimit;
           game.loseLife(`Time's Up`);
         }
-        this.timeLimit = this.timeLimit - 1;
+        this.timer -= 1;
       }, 100);
-      console.log('setting interval', this.timerID);
     }
     if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
       clearInterval(this.timerID);
-      console.log(
-        'clearing interval-2',
-        this.timerID,
-        clearInterval(this.timerID)
-      );
       this.timerID = null;
-      if (mode === 'clear') this.timeLimit = 200;
+      if (mode === 'clear') this.timer = this.timeLimit;
     }
   }
 
@@ -140,22 +135,22 @@ class Lane {
   }
 
   addCar(clipY, posY) {
-    let totalGapLength = 0;
-    let laneIndex = posY;
+    let posX = 0;
+    const laneIndex = posY;
 
     for (let i = 0; i < this.maxItems; i++) {
-      if (totalGapLength + 150 > game.canvas.width) break;
-      let car = new Sprite();
-      let gap = getRandomInt(20, 200);
-      i == 0 ? (totalGapLength = 0) : (totalGapLength += car.width + gap);
-      car.posX = totalGapLength;
-      car.posY = game.canvas.height - game.gridSize * laneIndex - 100;
-      car.clipX = 700 * i;
-      car.clipX %= 2800;
+      const car = new Sprite();
+      let gap = getRandomInt(80, 200);
 
+      car.posX = posX;
+      car.posY = game.canvas.height - game.gridSize * laneIndex - 100;
+      car.clipX = (700 * i) % 2800;
       car.clipY = clipY;
       car.speed = this.direction === 'right' ? this.speed : this.speed * -1;
       this.cars.push(car);
+
+      posX += car.width + gap;
+      if (posX >= game.canvas.width) break;
     }
   }
 }
