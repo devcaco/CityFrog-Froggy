@@ -84,12 +84,7 @@ class Froggy {
       //check coordinates for collision
       if (fx1 > cx1 && fx2 < cx2 && game.animate) {
         //collision detected!
-        game.animate = false;
-        game.lives--;
-        game.updateLivesDisplay();
-        game.writeText('Ouuuch');
-        game.pauseAnimation(500);
-        this.reset();
+        game.loseLife('Ouuuch');
       }
     });
   }

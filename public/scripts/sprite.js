@@ -1,5 +1,5 @@
 class Sprite {
-  constructor(imgSrc, width, height, clipW, clipH) {
+  constructor(imgSrc, width, height, clipW, clipH, pointValue) {
     this.posX = 0;
     this.posY = 0;
     this.speed = 1;
@@ -14,6 +14,7 @@ class Sprite {
     this.collected = false;
     this.visible = true;
     this.interval = null;
+    this.pointValue = pointValue || 50;
     this.create();
   }
 

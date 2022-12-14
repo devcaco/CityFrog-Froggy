@@ -40,6 +40,11 @@
   justify-content: flex-end;
   align-items: flex-end;
 }
+.game__container--header--right-score {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    
+}
 .game__container--header--right-lives img {
   height: 30px;
 }

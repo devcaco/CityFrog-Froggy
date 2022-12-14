@@ -17,7 +17,8 @@ class Game {
     this.currentLevel = 1;
     this.levelup = false;
     this.froggy = new Froggy(this.canvas);
-    this.timer = null;
+    this.timer = 0;
+    this.timerID = null;
     this.keyBind();
     this.froggy.create();
   }
@@ -26,15 +27,12 @@ class Game {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
       if (this.state === 'playing' && this.animate) this.froggy.move(e.code);
+      if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
       if (this.state === 'initial' && e.code === 'KeyS') {
+        if (!this.levels.length) this.start();
         this.state = 'playing';
+        this.levels[this.currentLevel - 1].levelTimer('start');
         this.updateLivesDisplay();
-        this.setLeafsDisplay();
-      }
-      if (this.state === 'gameover' && e.code === 'KeyR') {
-        this.state = 'playing';
-        this.reset();
-        this.start();
         this.setLeafsDisplay();
       }
     });
@@ -52,6 +50,18 @@ class Game {
     this.levels.push(new Level(2, 4, 4));
     this.levels.push(new Level(3, 3));
     this.levels.push(new Level(3, 5));
+  }
+
+  loseLife(message) {
+    this.lives--;
+    this.updateLivesDisplay();
+    this.writeText(message);
+    this.froggy.reset();
+    this.pauseAnimation(500);
+    if (!this.lives) {
+      this.state = 'gameover';
+      //   return;
+    }
   }
 
   renderBackground() {
@@ -92,6 +102,30 @@ class Game {
         15
       );
     }
+
+    // Display Current Score
+    if (this.state === 'playing') {
+      this.ctx.fillStyle = 'white';
+      this.ctx.font = '18px Arial';
+      this.ctx.textAlign = 'left';
+      this.ctx.textBaseline = 'top';
+      this.ctx.fillText(`score - ${this.score}`, 15, 15);
+    }
+
+    // Display Timer
+    if (this.state === 'playing') {
+      this.ctx.fillStyle = 'white';
+      this.ctx.font = '18px Arial';
+      this.ctx.textAlign = 'left';
+      this.ctx.textBaseline = 'alphabetic';
+      this.ctx.fillText(
+        `time - ${(this.levels[this.currentLevel - 1].timeLimit / 10).toFixed(
+          1
+        )}`,
+        15,
+        this.canvasHeight - 15
+      );
+    }
   }
 
   renderInitialScreen() {
@@ -107,6 +141,7 @@ class Game {
       game.canvas.height / 2
     );
   }
+
   renderGameOverScreen() {
     this.ctx.fillStyle = 'rgba(0, 0, 0,.8)';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -138,6 +173,10 @@ class Game {
   }
 
   renderLeafs() {
+    if (!this.levels[this.currentLevel - 1].leafs.length) {
+      this.levels[this.currentLevel - 1].setLeafs();
+      this.setLeafsDisplay();
+    }
     this.levels[this.currentLevel - 1].leafs.forEach((leaf) => leaf.render());
   }
 
@@ -157,20 +196,26 @@ class Game {
         this.froggy.posX === goldenLeaf.posX &&
         this.froggy.posY === goldenLeaf.posY
       ) {
+        this.score += 100;
         this.pauseAnimation(1500);
         this.levelup = true;
       }
     }
   }
+
   pauseAnimation(time) {
     this.animate = false;
+    this.levels[this.currentLevel - 1].levelTimer('pause');
     setTimeout(() => {
       this.animate = true;
+      if (this.state !== 'gameover')
+        this.levels[this.currentLevel - 1].levelTimer('start');
       this.gameLoop();
     }, time || 1000);
   }
 
   writeText(text) {
+    this.ctx.beginPath();
     this.ctx.fillStyle = 'rgba(0, 0, 0, .5)';
     this.ctx.rect(this.froggy.posX - 25, this.froggy.posY + 50, 100, 35);
     this.ctx.fill();
@@ -179,7 +224,7 @@ class Game {
     let posX = this.canvas.width / 2;
     let posY = 30;
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(text, this.froggy.posX + 25, this.froggy.posY + 60);
+    this.ctx.fillText(text, this.froggy.posX + 25, this.froggy.posY + 73);
   }
 
   updateLivesDisplay() {
@@ -190,10 +235,6 @@ class Game {
       img.src = './images/froggy-up.png';
       img.alt = 'lives';
       html.appendChild(img);
-    }
-    if (!this.lives) {
-      this.state = 'gameover';
-      return;
     }
   }
 
@@ -262,6 +303,8 @@ class Game {
     this.froggy.reset();
     this.levels = [];
     this.updateLivesDisplay();
+    this.state = 'initial';
+    this.start();
   }
 
   gameLoop() {
@@ -278,6 +321,7 @@ class Game {
       this.levels[this.currentLevel - 1].collectLeafs();
       if (this.levelup) this.changeLevels();
     } else if (this.state === 'gameover') {
+      this.renderCars();
       this.renderGameOverScreen();
       return;
     }

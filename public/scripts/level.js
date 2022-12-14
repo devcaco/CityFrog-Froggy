@@ -1,14 +1,39 @@
 class Level {
-  constructor(dificulty, activeLanes, nroOfLeafs) {
+  constructor(dificulty, activeLanes, nroOfLeafs, timeLimit) {
     this.dificulty = dificulty || 1;
     this.activeLanes = activeLanes;
     this.nroOfLeafs = nroOfLeafs || 3;
     this.lanes = [];
+    this.timeLimit = timeLimit || 200;
+    this.timerID = null;
     this.leafs = [];
     this.leafsCollected = [];
     this.setLanes();
     this.setLanesCars();
-    this.setLeafs();
+    // this.setLeafs();
+  }
+
+  levelTimer(mode) {
+    if (mode === 'start') {
+      this.timerID = setInterval(() => {
+        if (this.timeLimit <= 0) {
+          this.timeLimit = 200;
+          game.loseLife(`Time's Up`);
+        }
+        this.timeLimit = this.timeLimit - 1;
+      }, 100);
+      console.log('setting interval', this.timerID);
+    }
+    if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
+      clearInterval(this.timerID);
+      console.log(
+        'clearing interval-2',
+        this.timerID,
+        clearInterval(this.timerID)
+      );
+      this.timerID = null;
+      if (mode === 'clear') this.timeLimit = 200;
+    }
   }
 
   setLanes() {
@@ -80,12 +105,12 @@ class Level {
   }
 
   moveLeaf(leaf) {
-    let temp = (game.canvas.width - 50) / 50;
-    let ran = getRandomInt(0, temp) * 50;
-    leaf.posX = ran;
+    let max = (game.canvas.width - 50) / 50;
+    leaf.posX = getRandomInt(0, max) * 50;
     leaf.posY =
       getRandomInt(1, 5) * 100 -
       (leaf.posX < getRandomInt(100, 700) ? leaf.height : 0);
+    leaf.pointValue -= 5;
   }
 
   collectLeafs() {
@@ -100,6 +125,7 @@ class Level {
         clearInterval(leaf.interval);
         this.leafsCollected.push(leaf);
         game.updateLeafsDisplay();
+        game.score += leaf.pointValue;
       }
     });
   }
