@@ -45,10 +45,7 @@ class Sprite {
       else this.posX = this.width * -1;
     else {
       if (this.posX >= this.width * -1) this.posX += this.speed;
-      // this.posX = game.canvas.width + this.width;
-      // else this.posX += this.speed;
       else this.posX = game.canvas.width;
     }
-    // console.log(this.posX, this.clipY, this.clipX);
   }
 }

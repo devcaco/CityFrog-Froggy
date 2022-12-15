@@ -15,19 +15,21 @@ class Level {
   }
 
   levelTimer(mode) {
-    if (mode === 'start') {
-      this.timerID = setInterval(() => {
-        if (this.timer <= 0) {
-          this.timer = this.timeLimit;
-          game.loseLife(`Time's Up`);
-        }
-        this.timer -= 1;
-      }, 100);
-    }
-    if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
-      clearInterval(this.timerID);
-      this.timerID = null;
-      if (mode === 'clear') this.timer = this.timeLimit;
+    if (game.timeLimit) {
+      if (mode === 'start') {
+        this.timerID = setInterval(() => {
+          if (this.timer <= 0) {
+            this.timer = this.timeLimit;
+            game.loseLife(`Time's Up`);
+          }
+          this.timer -= 1;
+        }, 100);
+      }
+      if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
+        clearInterval(this.timerID);
+        this.timerID = null;
+        if (mode === 'clear') this.timer = this.timeLimit;
+      }
     }
   }
 

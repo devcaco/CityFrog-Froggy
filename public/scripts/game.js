@@ -11,7 +11,8 @@ class Game {
     this.animate = true;
     this.nroOfLevels = 5;
     this.nroOfLanes = 5;
-    this.horizontalWrap = false;
+    this.horizontalWrap = true;
+    this.timeLimit = true;
     this.levels = [];
     this.lives = 4;
     this.score = 0;
@@ -115,7 +116,7 @@ class Game {
     }
 
     // Display Timer
-    if (this.state === 'playing') {
+    if (this.state === 'playing' && this.timeLimit) {
       this.ctx.fillStyle = 'white';
       this.ctx.font = '18px Arial';
       this.ctx.textAlign = 'left';
@@ -215,7 +216,6 @@ class Game {
   }
 
   writeText(text) {
-    this.ctx.beginPath();
     this.ctx.fillStyle = 'rgba(0, 0, 0, .5)';
     this.ctx.rect(this.froggy.posX - 25, this.froggy.posY + 50, 100, 35);
     this.ctx.fill();
@@ -224,6 +224,7 @@ class Game {
     let posX = this.canvas.width / 2;
     let posY = 30;
     this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'alphabetic';
     this.ctx.fillText(text, this.froggy.posX + 25, this.froggy.posY + 73);
   }
 
@@ -268,6 +269,7 @@ class Game {
   changeLevels() {
     console.log('leveling-up');
     this.levelup = false;
+    this.ctx.beginPath();
     this.ctx.fillStyle = 'rgba(208, 80, 32, .9)';
     this.ctx.strokeStyle = '#fff';
     this.ctx.lineWidth = 5;
