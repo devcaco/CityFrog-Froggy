@@ -39,7 +39,6 @@ class Sprite {
     }
   }
   move() {
-    this.posX = +this.posX.toFixed(2);
     if (this.speed > 0)
       if (this.posX <= game.canvas.width) this.posX += this.speed;
       else this.posX = this.width * -1;
