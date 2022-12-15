@@ -45,7 +45,7 @@ class Froggy {
         else {
           if (game.horizontalWrap) {
             if (this.posX !== this.canvas.width) this.posX += game.gridSize;
-            else this.posX = 0 - game.gridSize;
+            else this.posX = 0 - game.gridSize * 2;
           }
         }
         break;
@@ -55,7 +55,7 @@ class Froggy {
         else {
           if (game.horizontalWrap) {
             if (this.posX === 0) this.posX -= game.gridSize;
-            else this.posX = this.canvas.width;
+            else this.posX = this.canvas.width + game.gridSize;
           }
         }
         break;
