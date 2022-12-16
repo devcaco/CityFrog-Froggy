@@ -27,6 +27,58 @@ class Froggy {
     }
   }
 
+  move2(direction) {
+    let i = 0;
+    let img = 'up';
+    let amount = game.gridSize;
+
+    let interval = setInterval(() => {
+      switch (direction) {
+        case 'ArrowUp':
+          img = 'up';
+          amount = game.gridSize;
+          if (this.posY > 0) this.posY -= 1;
+          break;
+        case 'ArrowDown':
+          img = 'down';
+          amount = game.gridSize;
+          if (this.posY + this.imgHeight < this.canvas.height) this.posY += 1;
+          break;
+        case 'ArrowRight':
+          img = 'right';
+          if (this.posX + this.imgWidth < this.canvas.width) {
+            amount = game.gridSize;
+            this.posX += 1;
+          } else {
+            if (game.horizontalWrap) {
+              if (this.posX !== this.canvas.width + game.gridSize * 2) {
+                amount = game.gridSize;
+                this.posX += 1;
+              } else {
+                amount = game.gridSize * 2;
+                this.posX = 0 - 1;
+              }
+            }
+          }
+          break;
+        case 'ArrowLeft':
+          img = 'left';
+          if (this.posX > 0) {
+            // console.log('moving left', this.posX);
+            this.posX -= 1;
+            amount = game.gridSize;
+          }
+          break;
+        default:
+          clearInterval(interval);
+      }
+      console.log(this.posY, this.posX);
+      this.img.src = `./images/froggy-${img}.png`;
+      i++;
+      if (i >= amount) clearInterval(interval);
+    }, 1);
+  }
+
   move(direction) {
     switch (direction) {
       case 'ArrowUp':
@@ -94,7 +146,7 @@ class Froggy {
       let fx2 = this.posX + this.imgWidth;
 
       //check coordinates for collision
-      if (fx1 > cx1 && fx2 < cx2 && game.animate) {
+      if (fx1 > cx1 && fx2 < cx2) {
         //collision detected!
         game.loseLife('Ouuuch');
       }

@@ -113,8 +113,11 @@ class Level {
   collectLeafs() {
     this.leafs.forEach((leaf) => {
       if (
-        game.froggy.posX === leaf.posX &&
-        game.froggy.posY === leaf.posY &&
+        game.froggy.posX + game.froggy.imgWidth > leaf.posX &&
+        game.froggy.posX < leaf.posX + leaf.width &&
+        game.froggy.posY >= leaf.posY &&
+        game.froggy.posY < leaf.posY + leaf.height &&
+        // game.froggy.posY > leaf.posY + leaf.height &&
         !leaf.collected
       ) {
         leaf.visible = false;

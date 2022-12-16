@@ -11,7 +11,7 @@ class Game {
     this.animate = true;
     this.nroOfLevels = 5;
     this.nroOfLanes = 5;
-    this.horizontalWrap = true;
+    this.horizontalWrap = false;
     this.timeLimit = true;
     this.levels = [];
     this.lives = 4;
