@@ -2,6 +2,8 @@ body {
   background: url('../images/bg1.png');
   background-size: cover;
   background-repeat: no-repeat;
+  height: auto;
+  min-height: 100vh;
 }
 .game__container {
   display: flex;

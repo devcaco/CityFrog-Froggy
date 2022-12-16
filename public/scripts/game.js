@@ -29,6 +29,8 @@ class Game {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
       if (this.state === 'playing' && this.animate) this.froggy.move(e.code);
+      if (this.state === 'playing' && e.code === 'KeyP') this.pauseGame(false);
+      if (this.state === 'paused' && e.code === 'KeyC') this.pauseGame(true);
       if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
       if (this.state === 'initial' && e.code === 'KeyS') {
         if (!this.levels.length) this.start();
@@ -41,7 +43,6 @@ class Game {
   }
 
   start() {
-    console.log('starting');
     this.createLevels();
     this.gameLoop();
     console.log(this.levels[this.currentLevel - 1]);
@@ -65,6 +66,19 @@ class Game {
       this.state = 'gameover';
       //   return;
     }
+  }
+
+  pauseGame(resume) {
+    if (resume) {
+      this.animate = true;
+      this.state = 'playing';
+      this.levels[this.currentLevel - 1].levelTimer('start');
+      this.gameLoop();
+      return;
+    }
+    this.levels[this.currentLevel - 1].levelTimer('pause');
+    this.state = 'paused';
+    this.animate = false;
   }
 
   renderBackground() {
@@ -94,7 +108,7 @@ class Game {
       this.ctx.stroke();
     }
     // Display Current Level Number
-    if (this.state === 'playing') {
+    if (this.state === 'playing' || this.state === 'paused') {
       this.ctx.fillStyle = 'white';
       this.ctx.font = '18px Arial';
       this.ctx.textAlign = 'right';
@@ -107,7 +121,7 @@ class Game {
     }
 
     // Display Current Score
-    if (this.state === 'playing') {
+    if (this.state === 'playing' || this.state === 'paused') {
       this.ctx.fillStyle = 'white';
       this.ctx.font = '18px Arial';
       this.ctx.textAlign = 'left';
@@ -116,7 +130,10 @@ class Game {
     }
 
     // Display Timer
-    if (this.state === 'playing' && this.timeLimit) {
+    if (
+      (this.state === 'playing' || this.state === 'paused') &&
+      this.timeLimit
+    ) {
       this.ctx.fillStyle = 'white';
       this.ctx.font = '18px Arial';
       this.ctx.textAlign = 'left';
@@ -204,6 +221,29 @@ class Game {
         this.levelup = true;
       }
     }
+  }
+
+  renderPausedScreen() {
+    this.ctx.beginPath();
+    this.ctx.fillStyle = 'rgba(208, 80, 32, .9)';
+    this.ctx.strokeStyle = '#fff';
+    this.ctx.lineWidth = 5;
+    this.ctx.rect(
+      300,
+      200,
+      this.canvas.width / 2 - 150,
+      this.canvas.height / 2 - 100
+    );
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    this.ctx.font = 'normal bold 18px arial';
+    this.ctx.fillStyle = '#fff';
+    let posX = this.canvas.width / 2;
+    let posY = this.canvas.height / 2;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText(`GAME PAUSED`, posX - 10, posY);
   }
 
   pauseAnimation(time) {
@@ -312,11 +352,10 @@ class Game {
   }
 
   gameLoop() {
-    if (!this.animate) return;
     this.renderBackground();
     if (this.state === 'initial') {
       this.renderInitialScreen();
-    } else if (this.state === 'playing') {
+    } else if (this.state === 'playing' || this.state == 'paused') {
       this.renderGoldenLeaf();
       this.renderLeafs();
       this.froggy.render();
@@ -324,11 +363,15 @@ class Game {
       this.froggy.checkCollision();
       this.levels[this.currentLevel - 1].collectLeafs();
       if (this.levelup) this.changeLevels();
+      if (this.state === 'paused') {
+        this.renderPausedScreen();
+      }
     } else if (this.state === 'gameover') {
       this.renderCars();
       this.renderGameOverScreen();
       return;
     }
+    if (!this.animate) return;
 
     requestAnimationFrame(() => {
       this.gameLoop();
