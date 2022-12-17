@@ -16,6 +16,7 @@ class Game {
     this.levels = [];
     this.lives = 4;
     this.score = 0;
+    this.timesUp = false;
     this.levelIndex = 0;
     this.currentLevel = this.levelIndex + 1;
     this.levelup = false;
@@ -34,7 +35,7 @@ class Game {
       if (this.state === 'paused' && e.code === 'KeyC') this.pauseGame(true);
       if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
       if (this.state === 'initial' && e.code === 'KeyS') {
-        if (!this.levels.length) this.start();
+        // if (!this.levels.length) this.start();
         this.state = 'playing';
         this.animate = true;
         this.startLevel();
@@ -73,14 +74,14 @@ class Game {
 
   levelUp() {
     this.state = 'levelcomplete';
-    this.pauseAnimation(1500);
+    this.pauseAnimation(1400);
     setTimeout(() => {
-      const oldLevelIndex = this.levelIndex;
+      // const oldLevelIndex = this.levelIndex;
+      this.levels[this.levelIndex].reset();
       this.levelIndex++;
       this.levelIndex %= 6;
       this.startLevel();
-      this.levels[oldLevelIndex].reset();
-    }, 1400);
+    }, 1500);
   }
 
   pauseAnimation(time) {
@@ -110,12 +111,12 @@ class Game {
 
   loseLife(message) {
     this.lives--;
-    // this.updateLivesDisplay();
     renderTooltip(this, message);
     this.froggy.reset();
     livesDisplay(this.lives);
     this.pauseAnimation(500);
     if (!this.lives) {
+      this.levels[this.levelIndex].reset();
       this.state = 'gameover';
       //   return;
     }
@@ -128,10 +129,11 @@ class Game {
   reset() {
     this.lives = 4;
     this.score = 0;
-    this.currentLevel = 1;
+    this.levelIndex = 0;
     this.froggy.reset();
     this.levels = [];
     this.state = 'initial';
+    this.animate = false;
     this.start();
   }
 
@@ -152,6 +154,10 @@ class Game {
       if (this.froggy.collided) {
         this.loseLife('Ouuuch');
         this.froggy.collided = false;
+      }
+      if (this.timesUp) {
+        this.loseLife('TimesUp');
+        this.timesUp = false;
       }
     } else if (this.state === 'gameover') {
       renderLevelItems(this);

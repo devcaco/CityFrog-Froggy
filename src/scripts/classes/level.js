@@ -1,5 +1,5 @@
 class Level {
-  constructor(dificulty = 1, activeLanes, nroOfLeafs = 3, timeLimit = 600) {
+  constructor(dificulty = 1, activeLanes, nroOfLeafs = 3, timeLimit = 150) {
     this.dificulty = dificulty;
     this.activeLanes = activeLanes;
     this.nroOfLeafs = nroOfLeafs;
@@ -19,7 +19,9 @@ class Level {
         this.timerID = setInterval(() => {
           if (this.timer <= 0) {
             this.timer = this.timeLimit;
-            game.loseLife(`Time's Up`);
+            clearInterval(this.timerID);
+            // game.loseLife(`Time's Up`);
+            game.timesUp = true;
           }
           this.timer -= 1;
         }, 100);
