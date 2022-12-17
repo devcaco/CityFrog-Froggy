@@ -20,7 +20,7 @@ class Game {
     this.levelIndex = 0;
     this.currentLevel = this.levelIndex + 1;
     this.levelup = false;
-    this.froggy = new Froggy(this.canvas);
+    this.froggy = new Froggy(this);
     this.timer = 0;
     this.timerID = null;
     this.keyBind();
@@ -65,19 +65,18 @@ class Game {
   }
 
   createLevels() {
-    this.levels.push(new Level(1, 3, 4));
-    this.levels.push(new Level(2, 3, 4));
-    this.levels.push(new Level(2, 4, 4));
-    this.levels.push(new Level(1, 3));
-    this.levels.push(new Level(1, 3));
+    this.levels.push(new Level(this, 1, 3, 4));
+    this.levels.push(new Level(this, 2, 3, 4));
+    this.levels.push(new Level(this, 2, 4, 4));
+    this.levels.push(new Level(this, 1, 3));
+    this.levels.push(new Level(this, 1, 3));
   }
 
   levelUp() {
     this.state = 'levelcomplete';
     this.pauseAnimation(1400);
     setTimeout(() => {
-      // const oldLevelIndex = this.levelIndex;
-      this.levels[this.levelIndex].reset();
+      this.endLevel();
       this.levelIndex++;
       this.levelIndex %= 6;
       this.startLevel();
@@ -118,12 +117,7 @@ class Game {
     if (!this.lives) {
       this.levels[this.levelIndex].reset();
       this.state = 'gameover';
-      //   return;
     }
-  }
-
-  carCollision() {
-    game.loseLife('Ouuuch');
   }
 
   reset() {
@@ -139,31 +133,35 @@ class Game {
 
   gameLoop() {
     renderBackground(this);
-    if (this.state === 'initial') {
-      renderInitialScreen(this);
-    } else if (
-      this.state === 'playing' ||
-      this.state == 'paused' ||
-      this.state == 'levelcomplete'
-    ) {
-      renderLevelItems(this);
-      this.levels[this.levelIndex].animateCars();
-      if (this.state === 'paused') renderPausedMsg(this);
-      if (this.state === 'levelcomplete') renderLevelCompleteMsg(this);
 
-      if (this.froggy.collided) {
-        this.loseLife('Ouuuch');
-        this.froggy.collided = false;
-      }
-      if (this.timesUp) {
-        this.loseLife('TimesUp');
-        this.timesUp = false;
-      }
-    } else if (this.state === 'gameover') {
-      renderLevelItems(this);
-      renderGameOverScreen(this);
-      return;
+    switch (this.state) {
+      case 'initial':
+        renderInitialScreen(this);
+        break;
+      case 'playing':
+      case 'paused':
+      case 'levelcomplete':
+        renderLevelItems(this);
+        this.levels[this.levelIndex].animateCars();
+        if (this.state === 'paused') renderPausedMsg(this);
+        if (this.state === 'levelcomplete') renderLevelCompleteMsg(this);
+        if (this.froggy.collided) {
+          this.loseLife('Ouuuch');
+          this.froggy.collided = false;
+        }
+        if (this.timesUp) {
+          this.loseLife('TimesUp');
+          this.timesUp = false;
+        }
+        break;
+      case 'gameover':
+        renderLevelItems(this);
+        renderGameOverScreen(this);
+        return;
+      default:
+        break;
     }
+
     if (!this.animate) return;
 
     requestAnimationFrame(() => {

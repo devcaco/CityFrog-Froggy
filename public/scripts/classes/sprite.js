@@ -1,6 +1,7 @@
 class Sprite {
-  constructor(canvas, imgSrc, width, height, clipW, clipH, pointValue) {
-    this.canvas = canvas;
+  constructor(game, imgSrc, width, height, clipW, clipH, pointValue) {
+    this.game = game;
+    this.canvas = this.game.canvas;
     this.ctx = canvas.getContext('2d');
     this.posX = 0;
     this.posY = 0;
@@ -38,19 +39,24 @@ class Sprite {
     }
   }
 
+  //animate sprite (cars) across canvas
   move() {
-    if (this.speed > 0)
+    //lane direction - right
+    if (this.speed > 0) {
+      // horizontal wrapping check
       if (this.posX <= game.canvas.width) this.posX += this.speed;
       else this.posX = this.width * -1;
-    else {
+    } else {
+      // lane direction - left
+      // horizontal wrapping check
       if (this.posX >= this.width * -1) this.posX += this.speed;
       else this.posX = game.canvas.width;
     }
-    if (this.checkCollision(_, 40)) game.froggy.collided = true;
+    //check if car collided with froggy
+    if (this.checkCollision(_, 40)) this.game.froggy.collided = true;
   }
 
-  checkCollision(obj = game.froggy, tolerance = 0) {
-    // console.log('checking');
+  checkCollision(obj = this.game.froggy, tolerance = 0) {
     if (
       obj.posX + obj.width > this.posX + tolerance &&
       obj.posX < this.posX - (tolerance + 5) + this.width &&

@@ -1,4 +1,4 @@
-function renderBackground(game) {
+const renderBackground = (game) => {
   game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
   game.ctx.fillStyle = 'darkgreen';
   game.ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
@@ -58,9 +58,9 @@ function renderBackground(game) {
       game.canvasHeight - 15
     );
   }
-}
+};
 
-function leafsDisplay(game) {
+const leafsDisplay = (game) => {
   const container = document.querySelector('.game__container-body');
   let leafsDisplayDiv = container.querySelector('.game__container--body-leafs');
 
@@ -91,9 +91,9 @@ function leafsDisplay(game) {
   }
 
   container.append(leafsDisplayDiv);
-}
+};
 
-function livesDisplay(nroOfLives) {
+const livesDisplay = (nroOfLives) => {
   const container = document.querySelector('.game__container-body');
   let livesDisplayDiv = container.querySelector('.game__container--body-lives');
 
@@ -104,13 +104,12 @@ function livesDisplay(nroOfLives) {
   }
 
   livesDisplayDiv.innerHTML = '';
-  //   console.log('num of lives', nroOfLives);
+  
   for (let i = 0; i < nroOfLives; i++) {
-    //     console.log('updatingLivesDisplay');
     const img = document.createElement('img');
     img.src = './public/images/froggy-up.png';
     img.alt = 'froggy-live';
     livesDisplayDiv.append(img);
   }
   container.append(livesDisplayDiv);
-}
+};

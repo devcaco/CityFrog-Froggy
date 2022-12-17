@@ -1,4 +1,4 @@
-function renderPausedMsg(game) {
+const renderPausedMsg = (game) => {
   game.ctx.beginPath();
   game.ctx.fillStyle = 'rgba(208, 80, 32, .9)';
   game.ctx.strokeStyle = '#fff';
@@ -19,9 +19,9 @@ function renderPausedMsg(game) {
   game.ctx.textAlign = 'center';
   game.ctx.textBaseline = 'middle';
   game.ctx.fillText(`GAME PAUSED`, posX - 10, posY);
-}
+};
 
-function renderLevelCompleteMsg(game) {
+const renderLevelCompleteMsg = (game) => {
   game.ctx.beginPath();
   game.ctx.fillStyle = 'rgba(208, 80, 32, .9)';
   game.ctx.strokeStyle = '#fff';
@@ -42,9 +42,9 @@ function renderLevelCompleteMsg(game) {
   game.ctx.textAlign = 'center';
   game.ctx.textBaseline = 'middle';
   game.ctx.fillText(`LEVEL ${game.levelIndex + 1} COMPLETE`, posX - 10, posY);
-}
+};
 
-function renderTooltip(game, text) {
+const renderTooltip = (game, text) => {
   game.ctx.fillStyle = 'rgba(0, 0, 0, .5)';
   game.ctx.rect(game.froggy.posX - 25, game.froggy.posY + 50, 100, 35);
   game.ctx.fill();
@@ -55,4 +55,4 @@ function renderTooltip(game, text) {
   game.ctx.textAlign = 'center';
   game.ctx.textBaseline = 'alphabetic';
   game.ctx.fillText(text, game.froggy.posX + 25, game.froggy.posY + 73);
-}
+};

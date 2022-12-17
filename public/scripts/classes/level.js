@@ -1,5 +1,12 @@
 class Level {
-  constructor(dificulty = 1, activeLanes, nroOfLeafs = 3, timeLimit = 150) {
+  constructor(
+    game,
+    dificulty = 1,
+    activeLanes,
+    nroOfLeafs = 3,
+    timeLimit = 300
+  ) {
+    this.game = game;
     this.dificulty = dificulty;
     this.activeLanes = activeLanes;
     this.nroOfLeafs = nroOfLeafs;
@@ -14,14 +21,13 @@ class Level {
   }
 
   levelTimer(mode) {
-    if (game.timeLimit) {
+    if (this.game.timeLimit) {
       if (mode === 'start') {
         this.timerID = setInterval(() => {
           if (this.timer <= 0) {
             this.timer = this.timeLimit;
             clearInterval(this.timerID);
-            // game.loseLife(`Time's Up`);
-            game.timesUp = true;
+            this.game.timesUp = true;
           }
           this.timer -= 1;
         }, 100);
@@ -38,7 +44,7 @@ class Level {
     let speed;
     let direction;
     let maxItems;
-    for (let i = 0; i < game.nroOfLanes; i++) {
+    for (let i = 0; i < this.game.nroOfLanes; i++) {
       direction = getRandomInt(1, 2) == 1 ? 'right' : 'left';
 
       switch (this.dificulty) {
@@ -58,7 +64,7 @@ class Level {
 
       if (i + 1 > this.activeLanes) maxItems = 0;
 
-      this.lanes.push(new Lane(speed, direction, maxItems));
+      this.lanes.push(new Lane(this.game, speed, direction, maxItems));
     }
     shuffle(this.lanes);
   }
@@ -88,21 +94,21 @@ class Level {
   setLeafs() {
     if (!this.leafs.length) {
       for (let i = 0; i < this.nroOfLeafs; i++) {
-        const leaf = new Leaf(game.canvas, _, 50);
+        const leaf = new Leaf(this.game, _, 50);
         this.leafs.push(leaf);
         this.leafs.intervalID = setInterval(() => {
           leaf.move();
           leaf.pointValue -= 5;
         }, getRandomInt(7000, 10000));
       }
-      const grid = (game.canvas.width - game.gridSize) / game.gridSize;
-      const goldenLeaf = new Leaf(game.canvas, 'golden-leaf.png', 100);
+      const grid =
+        (this.game.canvas.width - this.game.gridSize) / this.game.gridSize;
+      const goldenLeaf = new Leaf(this.game, 'golden-leaf.png', 100);
       goldenLeaf.posX = (grid / 2) * 50;
       goldenLeaf.posY = 0;
       goldenLeaf.visible = false;
       this.leafs.push(goldenLeaf);
     }
-    console.log(this.leafs);
   }
 
   checkIfOverLeaf() {
@@ -113,15 +119,15 @@ class Level {
         clearInterval(leaf.intervalID);
         this.leafs.splice(index, 1);
         // game.updateLeafsDisplay();
-        game.score += leaf.pointValue;
+        this.game.score += leaf.pointValue;
 
         if (leaf.imgSrc === 'golden-leaf.png') {
-          game.levelUp();
+          this.game.levelUp();
         } else {
           this.leafsCollected.push(leaf);
         }
 
-        leafsDisplay(game);
+        leafsDisplay(this.game);
       }
     });
   }
@@ -132,39 +138,5 @@ class Level {
     this.leafsCollected = [];
     this.timerID = null;
     this.timer = this.timeLimit;
-  }
-}
-
-class Lane {
-  constructor(speed, direction = 'right', maxItems = 5) {
-    this.speed = speed || 1;
-    this.maxItems = maxItems;
-    this.direction = direction;
-    this.cars = [];
-  }
-
-  addLaneCars(clipY, laneIndex) {
-    let totalLength = 0;
-
-    for (let i = 0; i < this.maxItems; i++) {
-      const car = new Sprite(game.canvas);
-      let gap = getRandomInt(80, 200);
-
-      car.posX = totalLength;
-      car.posY = game.canvas.height - game.gridSize * laneIndex - 100;
-      car.clipX = (700 * i) % 2800;
-      car.clipY = clipY;
-      car.speed = this.direction === 'right' ? this.speed : this.speed * -1;
-      this.cars.push(car);
-
-      totalLength += car.width + gap;
-      if (totalLength >= game.canvas.width) break;
-    }
-  }
-
-  animateLaneCars() {
-    this.cars.forEach((car, index) => {
-      car.move();
-    });
   }
 }

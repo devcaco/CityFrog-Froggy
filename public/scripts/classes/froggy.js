@@ -1,6 +1,6 @@
 class Froggy extends Sprite {
-  constructor(canvas) {
-    super(canvas, 'froggy-up.png', 50, 50, 504, 466);
+  constructor(game) {
+    super(game, 'froggy-up.png', 50, 50, 504, 466);
     this.posX = (this.canvas.width - this.width) / 2;
     this.posY = this.canvas.height - this.height;
     this.collided = false;
@@ -10,31 +10,31 @@ class Froggy extends Sprite {
     switch (direction) {
       case 'ArrowUp':
         this.img.src = './public/images/froggy-up.png';
-        if (this.posY > 0) this.posY -= game.gridSize;
+        if (this.posY > 0) this.posY -= this.game.gridSize;
         break;
       case 'ArrowDown':
         this.img.src = './public/images/froggy-down.png';
         if (this.posY + this.height < this.canvas.height)
-          this.posY += game.gridSize;
+          this.posY += this.game.gridSize;
         break;
       case 'ArrowRight':
         this.img.src = './public/images/froggy-right.png';
         if (this.posX + this.width < this.canvas.width)
-          this.posX += game.gridSize;
+          this.posX += this.game.gridSize;
         else {
-          if (game.horizontalWrap) {
-            if (this.posX !== this.canvas.width) this.posX += game.gridSize;
-            else this.posX = 0 - game.gridSize * 2;
+          if (this.game.horizontalWrap) {
+            if (this.posX !== this.canvas.width) this.posX += this.game.gridSize;
+            else this.posX = 0 - this.game.gridSize * 2;
           }
         }
         break;
       case 'ArrowLeft':
         this.img.src = './public/images/froggy-left.png';
-        if (this.posX > 0) this.posX -= game.gridSize;
+        if (this.posX > 0) this.posX -= this.game.gridSize;
         else {
-          if (game.horizontalWrap) {
-            if (this.posX === 0) this.posX -= game.gridSize;
-            else this.posX = this.canvas.width + game.gridSize;
+          if (this.game.horizontalWrap) {
+            if (this.posX === 0) this.posX -= this.game.gridSize;
+            else this.posX = this.canvas.width + this.game.gridSize;
           }
         }
         break;
@@ -42,7 +42,7 @@ class Froggy extends Sprite {
         this.img.src = './public/images/froggy-up.png';
         break;
     }
-    game.levels[game.levelIndex].checkIfOverLeaf();
+    this.game.levels[this.game.levelIndex].checkIfOverLeaf();
   }
 
   reset() {
@@ -54,32 +54,32 @@ class Froggy extends Sprite {
   moveSmooth(direction) {
     let i = 0;
     let img = 'up';
-    let amount = game.gridSize;
+    let amount = this.game.gridSize;
 
     let interval = setInterval(() => {
       switch (direction) {
         case 'ArrowUp':
           img = 'up';
-          amount = game.gridSize;
+          amount = this.game.gridSize;
           if (this.posY > 0) this.posY -= 1;
           break;
         case 'ArrowDown':
           img = 'down';
-          amount = game.gridSize;
+          amount = this.game.gridSize;
           if (this.posY + this.height < this.canvas.height) this.posY += 1;
           break;
         case 'ArrowRight':
           img = 'right';
           if (this.posX + this.width < this.canvas.width) {
-            amount = game.gridSize;
+            amount = this.game.gridSize;
             this.posX += 1;
           } else {
-            if (game.horizontalWrap) {
-              if (this.posX !== this.canvas.width + game.gridSize * 2) {
-                amount = game.gridSize;
+            if (this.game.horizontalWrap) {
+              if (this.posX !== this.canvas.width + this.game.gridSize * 2) {
+                amount = this.game.gridSize;
                 this.posX += 1;
               } else {
-                amount = game.gridSize * 2;
+                amount = this.game.gridSize * 2;
                 this.posX = 0 - 1;
               }
             }
@@ -88,9 +88,8 @@ class Froggy extends Sprite {
         case 'ArrowLeft':
           img = 'left';
           if (this.posX > 0) {
-            // console.log('moving left', this.posX);
             this.posX -= 1;
-            amount = game.gridSize;
+            amount = this.game.gridSize;
           }
           break;
         default:

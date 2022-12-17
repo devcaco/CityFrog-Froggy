@@ -1,6 +1,5 @@
-function renderLeafs(game) {
+const renderLeafs = (game) => {
   game.levels[game.levelIndex].leafs.forEach((leaf) => {
-    //   console.log('rendering-leafs');
     if (leaf.imgSrc === 'leaf.png') leaf.render();
     else {
       if (
@@ -12,20 +11,20 @@ function renderLeafs(game) {
       }
     }
   });
-}
+};
 
-function renderFroggy(game) {
+const renderFroggy = (game) => {
   game.froggy.render();
-}
+};
 
-function renderCars(game) {
+const renderCars = (game) => {
   game.levels[game.levelIndex].lanes.forEach((lane, index) => {
     lane.cars.forEach((car) => car.render());
   });
-}
+};
 
-function renderLevelItems(game) {
+const renderLevelItems = (game) => {
   renderLeafs(game);
   renderFroggy(game);
   renderCars(game);
-}
+};
