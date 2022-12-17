@@ -19,7 +19,7 @@ class Sprite {
 
   create() {
     this.img = new Image();
-    this.img.src = `./src/images/${this.imgSrc}`;
+    this.img.src = `./public/images/${this.imgSrc}`;
   }
 
   render() {

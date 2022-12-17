@@ -9,16 +9,16 @@ class Froggy extends Sprite {
   move(direction) {
     switch (direction) {
       case 'ArrowUp':
-        this.img.src = './src/images/froggy-up.png';
+        this.img.src = './public/images/froggy-up.png';
         if (this.posY > 0) this.posY -= game.gridSize;
         break;
       case 'ArrowDown':
-        this.img.src = './src/images/froggy-down.png';
+        this.img.src = './public/images/froggy-down.png';
         if (this.posY + this.height < this.canvas.height)
           this.posY += game.gridSize;
         break;
       case 'ArrowRight':
-        this.img.src = './src/images/froggy-right.png';
+        this.img.src = './public/images/froggy-right.png';
         if (this.posX + this.width < this.canvas.width)
           this.posX += game.gridSize;
         else {
@@ -29,7 +29,7 @@ class Froggy extends Sprite {
         }
         break;
       case 'ArrowLeft':
-        this.img.src = './src/images/froggy-left.png';
+        this.img.src = './public/images/froggy-left.png';
         if (this.posX > 0) this.posX -= game.gridSize;
         else {
           if (game.horizontalWrap) {
@@ -39,14 +39,14 @@ class Froggy extends Sprite {
         }
         break;
       default:
-        this.img.src = './src/images/froggy-up.png';
+        this.img.src = './public/images/froggy-up.png';
         break;
     }
     game.levels[game.levelIndex].checkIfOverLeaf();
   }
 
   reset() {
-    this.img.src = './src/images/froggy-up.png';
+    this.img.src = './public/images/froggy-up.png';
     this.posX = (this.canvas.width - this.width) / 2;
     this.posY = this.canvas.height - this.height;
   }
@@ -97,7 +97,7 @@ class Froggy extends Sprite {
           clearInterval(interval);
       }
       console.log(this.posY, this.posX);
-      this.img.src = `./src/images/froggy-${img}.png`;
+      this.img.src = `./public/images/froggy-${img}.png`;
       i++;
       if (i >= amount) clearInterval(interval);
     }, 1);

@@ -74,7 +74,7 @@ function leafsDisplay(game) {
     leafsDisplayDiv.innerHTML = '';
     for (let i = 0; i < game.levels[game.levelIndex].nroOfLeafs; i++) {
       const img = document.createElement('img');
-      img.src = './src/images/leaf.png';
+      img.src = './public/images/leaf.png';
       img.alt = 'leaf';
       img.classList.add('greyscaled');
       leafsDisplayDiv.appendChild(img);
@@ -108,7 +108,7 @@ function livesDisplay(nroOfLives) {
   for (let i = 0; i < nroOfLives; i++) {
     //     console.log('updatingLivesDisplay');
     const img = document.createElement('img');
-    img.src = './src/images/froggy-up.png';
+    img.src = './public/images/froggy-up.png';
     img.alt = 'froggy-live';
     livesDisplayDiv.append(img);
   }
