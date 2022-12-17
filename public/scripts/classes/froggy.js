@@ -10,31 +10,32 @@ class Froggy extends Sprite {
     switch (direction) {
       case 'ArrowUp':
         this.img.src = './public/images/froggy-up.png';
-        if (this.posY > 0) this.posY -= this.game.gridSize;
+        if (this.posY > 0) this.posY -= this.game.settings.gridSize;
         break;
       case 'ArrowDown':
         this.img.src = './public/images/froggy-down.png';
         if (this.posY + this.height < this.canvas.height)
-          this.posY += this.game.gridSize;
+          this.posY += this.game.settings.gridSize;
         break;
       case 'ArrowRight':
         this.img.src = './public/images/froggy-right.png';
         if (this.posX + this.width < this.canvas.width)
-          this.posX += this.game.gridSize;
+          this.posX += this.game.settings.gridSize;
         else {
-          if (this.game.horizontalWrap) {
-            if (this.posX !== this.canvas.width) this.posX += this.game.gridSize;
-            else this.posX = 0 - this.game.gridSize * 2;
+          if (this.game.settings.horizontalWrap) {
+            if (this.posX !== this.canvas.width)
+              this.posX += this.game.settings.gridSize;
+            else this.posX = 0 - this.game.settings.gridSize * 2;
           }
         }
         break;
       case 'ArrowLeft':
         this.img.src = './public/images/froggy-left.png';
-        if (this.posX > 0) this.posX -= this.game.gridSize;
+        if (this.posX > 0) this.posX -= this.game.settings.gridSize;
         else {
-          if (this.game.horizontalWrap) {
-            if (this.posX === 0) this.posX -= this.game.gridSize;
-            else this.posX = this.canvas.width + this.game.gridSize;
+          if (this.game.settings.horizontalWrap) {
+            if (this.posX === 0) this.posX -= this.game.settings.gridSize;
+            else this.posX = this.canvas.width + this.game.settings.gridSize;
           }
         }
         break;
@@ -54,32 +55,35 @@ class Froggy extends Sprite {
   moveSmooth(direction) {
     let i = 0;
     let img = 'up';
-    let amount = this.game.gridSize;
+    let amount = this.game.settings.gridSize;
 
     let interval = setInterval(() => {
       switch (direction) {
         case 'ArrowUp':
           img = 'up';
-          amount = this.game.gridSize;
+          amount = this.game.settings.gridSize;
           if (this.posY > 0) this.posY -= 1;
           break;
         case 'ArrowDown':
           img = 'down';
-          amount = this.game.gridSize;
+          amount = this.game.settings.gridSize;
           if (this.posY + this.height < this.canvas.height) this.posY += 1;
           break;
         case 'ArrowRight':
           img = 'right';
           if (this.posX + this.width < this.canvas.width) {
-            amount = this.game.gridSize;
+            amount = this.game.settings.gridSize;
             this.posX += 1;
           } else {
-            if (this.game.horizontalWrap) {
-              if (this.posX !== this.canvas.width + this.game.gridSize * 2) {
-                amount = this.game.gridSize;
+            if (this.game.settings.horizontalWrap) {
+              if (
+                this.posX !==
+                this.canvas.width + this.game.settings.gridSize * 2
+              ) {
+                amount = this.game.settings.gridSize;
                 this.posX += 1;
               } else {
-                amount = this.game.gridSize * 2;
+                amount = this.game.settings.gridSize * 2;
                 this.posX = 0 - 1;
               }
             }
@@ -89,7 +93,7 @@ class Froggy extends Sprite {
           img = 'left';
           if (this.posX > 0) {
             this.posX -= 1;
-            amount = this.game.gridSize;
+            amount = this.game.settings.gridSize;
           }
           break;
         default:

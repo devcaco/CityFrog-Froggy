@@ -2,7 +2,7 @@ class Sprite {
   constructor(game, imgSrc, width, height, clipW, clipH, pointValue) {
     this.game = game;
     this.canvas = this.game.canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = this.canvas.getContext('2d');
     this.posX = 0;
     this.posY = 0;
     this.speed = 1;
@@ -44,13 +44,13 @@ class Sprite {
     //lane direction - right
     if (this.speed > 0) {
       // horizontal wrapping check
-      if (this.posX <= game.canvas.width) this.posX += this.speed;
+      if (this.posX <= this.game.canvas.width) this.posX += this.speed;
       else this.posX = this.width * -1;
     } else {
       // lane direction - left
       // horizontal wrapping check
       if (this.posX >= this.width * -1) this.posX += this.speed;
-      else this.posX = game.canvas.width;
+      else this.posX = this.game.canvas.width;
     }
     //check if car collided with froggy
     if (this.checkCollision(_, 40)) this.game.froggy.collided = true;

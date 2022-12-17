@@ -15,7 +15,8 @@ class Lane {
       let gap = getRandomInt(80, 200);
 
       car.posX = totalLength;
-      car.posY = this.game.canvas.height - this.game.gridSize * laneIndex - 100;
+      car.posY =
+        this.game.canvas.height - this.game.settings.gridSize * laneIndex - 100;
       car.clipX = (700 * i) % 2800;
       car.clipY = clipY;
       car.speed = this.direction === 'right' ? this.speed : this.speed * -1;

@@ -1,30 +1,35 @@
+const defaultSettings = {
+  nroOfLanes: 5,
+  nroOfLives: 4,
+  nroOfLevels: 6,
+  horizontalWrap: true,
+  enableTimer: true,
+  gridSize: 50,
+  canvas: {
+    container: '#game-canvas-container',
+    width: 950,
+    height: 600,
+  },
+};
+
 class Game {
-  constructor(canvas) {
-    this.canvas = canvas;
+  constructor(settings = defaultSettings) {
+    this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
-    this.canvasWidth = 950;
-    this.canvasHeight = 600;
-    this.canvas.width = this.canvasWidth;
-    this.canvas.height = this.canvasHeight;
-    this.gridSize = 50;
+    this.settings = { ...defaultSettings, ...settings };
+    this.canvas.width = this.settings.canvas.width || 950;
+    this.canvas.height = this.settings.canvas.height || 600;
     this.state = 'initial';
     this.animate = false;
-    this.nroOfLevels = 5;
-    this.nroOfLanes = 5;
-    this.horizontalWrap = true;
-    this.timeLimit = true;
     this.levels = [];
-    this.lives = 4;
+    this.lives = this.settings.nroOfLives;
     this.score = 0;
     this.timesUp = false;
     this.levelIndex = 0;
-    this.currentLevel = this.levelIndex + 1;
-    this.levelup = false;
     this.froggy = new Froggy(this);
     this.timer = 0;
     this.timerID = null;
     this.keyBind();
-    this.froggy.create();
   }
 
   keyBind() {
@@ -35,13 +40,21 @@ class Game {
       if (this.state === 'paused' && e.code === 'KeyC') this.pauseGame(true);
       if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
       if (this.state === 'initial' && e.code === 'KeyS') {
-        // if (!this.levels.length) this.start();
         this.state = 'playing';
         this.animate = true;
         this.startLevel();
         this.gameLoop();
       }
     });
+  }
+
+  mount() {
+    const container = document.querySelector(this.settings.canvas.container);
+    if (container) {
+      container.appendChild(this.canvas);
+      this.canvas.setAttribute('id', 'game-canvas');
+      this.start();
+    }
   }
 
   start() {

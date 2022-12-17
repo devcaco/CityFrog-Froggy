@@ -5,13 +5,13 @@ const renderBackground = (game) => {
   game.ctx.fillStyle = '#4E4E4F';
   game.ctx.fillRect(
     0,
-    game.gridSize,
+    game.settings.gridSize,
     game.canvas.width,
-    game.canvas.height - game.gridSize * 2
+    game.canvas.height - game.settings.gridSize * 2
   );
 
   game.ctx.strokeStyle = '#FFF';
-  for (let i = 0; i <= game.canvas.height / game.gridSize - 2; i++) {
+  for (let i = 0; i <= game.canvas.height / game.settings.gridSize - 2; i++) {
     game.ctx.beginPath();
     if (i % 2 === 0) {
       game.ctx.setLineDash([]);
@@ -20,8 +20,8 @@ const renderBackground = (game) => {
       game.ctx.setLineDash([15, 35]);
       game.ctx.lineWidth = 2;
     }
-    game.ctx.moveTo(0, game.gridSize * (i + 1));
-    game.ctx.lineTo(canvas.width, game.gridSize * (i + 1));
+    game.ctx.moveTo(0, game.settings.gridSize * (i + 1));
+    game.ctx.lineTo(game.canvas.width, game.settings.gridSize * (i + 1));
     game.ctx.stroke();
   }
   // Display Current Level Number
@@ -47,7 +47,10 @@ const renderBackground = (game) => {
   }
 
   // Display Timer
-  if ((game.state === 'playing' || game.state === 'paused') && game.timeLimit) {
+  if (
+    (game.state === 'playing' || game.state === 'paused') &&
+    game.settings.enableTimer
+  ) {
     game.ctx.fillStyle = 'white';
     game.ctx.font = '18px Arial';
     game.ctx.textAlign = 'left';
@@ -55,7 +58,7 @@ const renderBackground = (game) => {
     game.ctx.fillText(
       `Time Left: - ${(game.levels[game.levelIndex].timer / 10).toFixed(1)}`,
       15,
-      game.canvasHeight - 15
+      game.canvas.height - 15
     );
   }
 };
@@ -104,7 +107,7 @@ const livesDisplay = (nroOfLives) => {
   }
 
   livesDisplayDiv.innerHTML = '';
-  
+
   for (let i = 0; i < nroOfLives; i++) {
     const img = document.createElement('img');
     img.src = './public/images/froggy-up.png';

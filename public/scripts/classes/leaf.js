@@ -7,12 +7,14 @@ class Leaf extends Sprite {
     this.move();
   }
   move() {
-    const grid = (this.canvas.width - this.game.gridSize) / this.game.gridSize;
+    const grid =
+      (this.canvas.width - this.game.settings.gridSize) /
+      this.game.settings.gridSize;
     this.posX = getRandomInt(0, grid) * 50;
     this.posY =
       getRandomInt(1, 5) * 100 -
       (this.posX < getRandomInt(100, 700) ? this.height : 0);
-    game.levels[this.game.levelIndex].checkIfOverLeaf();
+    this.game.levels[this.game.levelIndex].checkIfOverLeaf();
   }
 
   render() {

@@ -1,7 +1,7 @@
 class Level {
   constructor(
     game,
-    dificulty = 1,
+    dificulty = 'easy',
     activeLanes,
     nroOfLeafs = 3,
     timeLimit = 300
@@ -21,22 +21,23 @@ class Level {
   }
 
   levelTimer(mode) {
-    if (this.game.timeLimit) {
-      if (mode === 'start') {
-        this.timerID = setInterval(() => {
-          if (this.timer <= 0) {
-            this.timer = this.timeLimit;
-            clearInterval(this.timerID);
-            this.game.timesUp = true;
-          }
-          this.timer -= 1;
-        }, 100);
-      }
-      if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
-        clearInterval(this.timerID);
-        this.timerID = null;
-        if (mode === 'clear') this.timer = this.timeLimit;
-      }
+    if (!this.game.settings.enableTimer) return;
+
+    if (mode === 'start') {
+      this.timerID = setInterval(() => {
+        if (this.timer <= 0) {
+          this.timer = this.timeLimit;
+          clearInterval(this.timerID);
+          this.game.timesUp = true;
+        }
+        this.timer -= 1;
+      }, 100);
+    }
+
+    if (mode === 'pause' || mode === 'stop' || mode === 'clear') {
+      clearInterval(this.timerID);
+      this.timerID = null;
+      if (mode === 'clear') this.timer = this.timeLimit;
     }
   }
 
@@ -44,19 +45,19 @@ class Level {
     let speed;
     let direction;
     let maxItems;
-    for (let i = 0; i < this.game.nroOfLanes; i++) {
+    for (let i = 0; i < this.game.settings.nroOfLanes; i++) {
       direction = getRandomInt(1, 2) == 1 ? 'right' : 'left';
 
       switch (this.dificulty) {
-        case 1:
+        case 'easy':
           speed = getRandomInt(1, 3, 2);
           maxItems = getRandomInt(10, 15);
           break;
-        case 2:
+        case 'medium':
           speed = getRandomInt(2, 4, 2);
           maxItems = getRandomInt(3, 8);
           break;
-        case 3:
+        case 'hard':
           speed = getRandomInt(3, 6, 2);
           maxItems = getRandomInt(4, 6);
           break;
@@ -102,7 +103,8 @@ class Level {
         }, getRandomInt(7000, 10000));
       }
       const grid =
-        (this.game.canvas.width - this.game.gridSize) / this.game.gridSize;
+        (this.game.canvas.width - this.game.settings.gridSize) /
+        this.game.settings.gridSize;
       const goldenLeaf = new Leaf(this.game, 'golden-leaf.png', 100);
       goldenLeaf.posX = (grid / 2) * 50;
       goldenLeaf.posY = 0;
