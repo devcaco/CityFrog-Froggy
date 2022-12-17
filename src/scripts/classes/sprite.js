@@ -1,5 +1,7 @@
 class Sprite {
-  constructor(imgSrc, width, height, clipW, clipH, pointValue) {
+  constructor(canvas, imgSrc, width, height, clipW, clipH, pointValue) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
     this.posX = 0;
     this.posY = 0;
     this.speed = 1;
@@ -11,21 +13,18 @@ class Sprite {
     this.clipY = 0;
     this.clipW = clipW || 700;
     this.clipH = clipH || 400;
-    this.collected = false;
     this.visible = true;
-    this.interval = null;
-    this.pointValue = pointValue || 50;
     this.create();
   }
 
   create() {
     this.img = new Image();
-    this.img.src = `./images/${this.imgSrc}`;
+    this.img.src = `./src/images/${this.imgSrc}`;
   }
 
   render() {
     if (this.img !== null && this.visible) {
-      game.ctx.drawImage(
+      this.ctx.drawImage(
         this.img,
         this.clipX,
         this.clipY,
@@ -38,6 +37,7 @@ class Sprite {
       );
     }
   }
+
   move() {
     if (this.speed > 0)
       if (this.posX <= game.canvas.width) this.posX += this.speed;
@@ -46,5 +46,18 @@ class Sprite {
       if (this.posX >= this.width * -1) this.posX += this.speed;
       else this.posX = game.canvas.width;
     }
+    if (this.checkCollision(_, 40)) game.froggy.collided = true;
+  }
+
+  checkCollision(obj = game.froggy, tolerance = 0) {
+    // console.log('checking');
+    if (
+      obj.posX + obj.width > this.posX + tolerance &&
+      obj.posX < this.posX - (tolerance + 5) + this.width &&
+      obj.posY >= this.posY &&
+      obj.posY < this.posY + this.height
+    )
+      return true;
+    return false;
   }
 }
