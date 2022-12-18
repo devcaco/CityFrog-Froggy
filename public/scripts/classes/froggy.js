@@ -41,8 +41,9 @@ class Froggy extends Sprite {
         break;
       default:
         this.img.src = './public/images/froggy-up.png';
-        break;
+        return;
     }
+    this.game.sounds.froggyJump.play();
     this.game.levels[this.game.levelIndex].checkIfOverLeaf();
   }
 

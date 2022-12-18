@@ -4,6 +4,7 @@ const defaultSettings = {
   nroOfLevels: 6,
   horizontalWrap: true,
   enableTimer: true,
+  enableSounds: true,
   gridSize: 50,
   canvas: {
     container: '#game-canvas-container',
@@ -17,8 +18,10 @@ class Game {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.settings = { ...defaultSettings, ...settings };
-    this.canvas.width = this.settings.canvas.width || 950;
-    this.canvas.height = this.settings.canvas.height || 600;
+    this.canvas.width =
+      this.settings.canvas.width || defaultSettings.canvas.width;
+    this.canvas.height =
+      this.settings.canvas.height || defaultSettings.canvas.height;
     this.state = 'initial';
     this.animate = false;
     this.levels = [];
@@ -29,6 +32,18 @@ class Game {
     this.froggy = new Froggy(this);
     this.timer = 0;
     this.timerID = null;
+    this.sounds = {
+      froggyJump: new Audio('./public/sounds/froggy-jump-2.wav'),
+      froggyCrash: new Audio('./public/sounds/froggy-crash-2.wav'),
+      froggyPick: new Audio('./public/sounds/froggy-pick.wav'),
+      levelComplete: new Audio('./public/sounds/level-complete.wav'),
+      timesUp: new Audio('./public/sounds/times-up-1.wav'),
+    };
+    const $this = this;
+    Audio.prototype.play = function () {
+      if (!$this.settings.enableSounds) return;
+      this.__proto__.__proto__.play.call(this.cloneNode(true));
+    };
     this.keyBind();
   }
 
@@ -64,7 +79,6 @@ class Game {
   }
 
   startLevel() {
-    console.log('starting level', this.levelIndex);
     this.levels[this.levelIndex].setLeafs();
     this.levels[this.levelIndex].levelTimer('start');
     this.froggy.reset();
@@ -87,12 +101,11 @@ class Game {
 
   levelUp() {
     this.state = 'levelcomplete';
-    this.pauseAnimation(1500);
+    this.pauseAnimation(1400);
     setTimeout(() => {
       this.endLevel();
       this.levelIndex++;
       this.levelIndex %= 5;
-      console.log('level - ', this.levelIndex);
       this.startLevel();
     }, 1400);
   }
@@ -103,7 +116,7 @@ class Game {
 
     setTimeout(() => {
       this.animate = true;
-      if (this.state !== 'gameover')
+      if (this.state !== 'gameover' && this.state !== 'levelcomplete')
         this.levels[this.levelIndex].levelTimer('start');
       this.gameLoop();
     }, time || 1000);
@@ -161,6 +174,7 @@ class Game {
         if (this.state === 'levelcomplete') renderLevelCompleteMsg(this);
         if (this.froggy.collided) {
           this.loseLife('Ouuuch');
+          this.sounds.froggyCrash.play();
           this.froggy.collided = false;
         }
         if (this.timesUp) {

@@ -29,6 +29,7 @@ class Level {
           this.timer = this.timeLimit;
           clearInterval(this.timerID);
           this.game.timesUp = true;
+          this.game.sounds.timesUp.play();
         }
         this.timer -= 1;
       }, 100);
@@ -120,13 +121,14 @@ class Level {
         leaf.collected = true;
         clearInterval(leaf.intervalID);
         this.leafs.splice(index, 1);
-        // game.updateLeafsDisplay();
         this.game.score += leaf.pointValue;
 
         if (leaf.imgSrc === 'golden-leaf.png') {
           this.game.levelUp();
+          this.game.sounds.levelComplete.play();
         } else {
           this.leafsCollected.push(leaf);
+          this.game.sounds.froggyPick.play();
         }
 
         leafsDisplay(this.game);

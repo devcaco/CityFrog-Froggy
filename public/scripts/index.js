@@ -3,7 +3,8 @@ const settings = {
     container: '#game-canvas-container',
   },
   nroOfLives: 5,
-  enableTimer: false,
+  enableTimer: true,
+  horizontalWrap: false,
 };
 
 window.addEventListener('load', () => {
