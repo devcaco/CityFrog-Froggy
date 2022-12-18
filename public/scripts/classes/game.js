@@ -78,22 +78,23 @@ class Game {
   }
 
   createLevels() {
-    this.levels.push(new Level(this, 1, 3, 4));
-    this.levels.push(new Level(this, 2, 3, 4));
-    this.levels.push(new Level(this, 2, 4, 4));
-    this.levels.push(new Level(this, 1, 3));
-    this.levels.push(new Level(this, 1, 3));
+    this.levels.push(new Level(this, 'easy', 3, 4, _));
+    this.levels.push(new Level(this, 'easy', 3, 4, _));
+    this.levels.push(new Level(this, 'medium', 4, 4, _));
+    this.levels.push(new Level(this, 'medium', 4, 4, _));
+    this.levels.push(new Level(this, 'easy', 3, 4, _));
   }
 
   levelUp() {
     this.state = 'levelcomplete';
-    this.pauseAnimation(1400);
+    this.pauseAnimation(1500);
     setTimeout(() => {
       this.endLevel();
       this.levelIndex++;
-      this.levelIndex %= 6;
+      this.levelIndex %= 5;
+      console.log('level - ', this.levelIndex);
       this.startLevel();
-    }, 1500);
+    }, 1400);
   }
 
   pauseAnimation(time) {
