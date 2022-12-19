@@ -7,7 +7,7 @@ class Lane {
     this.cars = [];
   }
 
-  addLaneCars(clipY, laneIndex) {
+  addLaneCars(laneIndex) {
     let totalLength = 0;
 
     for (let i = 0; i < this.maxItems; i++) {
@@ -17,9 +17,10 @@ class Lane {
       car.posX = totalLength;
       car.posY =
         this.game.canvas.height - this.game.settings.gridSize * laneIndex - 100;
-      car.clipX = (700 * i) % 2800;
-      car.clipY = clipY;
+      car.clipX = getRandomInt(0, 3) * 700;
+      car.clipY = getRandomInt(0, 3) * 400;
       car.speed = this.direction === 'right' ? this.speed : this.speed * -1;
+      if (this.direction === 'left') car.rotation = 180;
       this.cars.push(car);
 
       totalLength += car.width + gap;

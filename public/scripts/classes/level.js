@@ -72,20 +72,9 @@ class Level {
   }
 
   setLanesCars() {
-    for (let i = 0, index = 0; i < this.lanes.length; i++) {
+    for (let i = 0; i < this.lanes.length; i++) {
       let posY = i * 2 + 1;
-      let clipY;
-      if (this.lanes[i].direction === 'right') {
-        index %= 3;
-        let arr = [0, 800, 1600];
-        clipY = arr[index];
-      } else {
-        index %= 2;
-        let arr = [400, 1200];
-        clipY = arr[index];
-      }
-      index++;
-      this.lanes[i].addLaneCars(clipY, posY);
+      this.lanes[i].addLaneCars(posY);
     }
   }
 

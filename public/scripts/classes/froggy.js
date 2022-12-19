@@ -1,6 +1,6 @@
 class Froggy extends Sprite {
   constructor(game) {
-    super(game, 'froggy-up.png', 50, 50, 504, 466);
+    super(game, 'froggy.png', 50, 50, 504, 466);
     this.posX = (this.canvas.width - this.width) / 2;
     this.posY = this.canvas.height - this.height;
     this.collided = false;
@@ -9,16 +9,15 @@ class Froggy extends Sprite {
   move(direction) {
     switch (direction) {
       case 'ArrowUp':
-        this.img.src = './public/images/froggy-up.png';
         if (this.posY > 0) this.posY -= this.game.settings.gridSize;
+        this.rotation = 0;
         break;
       case 'ArrowDown':
-        this.img.src = './public/images/froggy-down.png';
         if (this.posY + this.height < this.canvas.height)
           this.posY += this.game.settings.gridSize;
+        this.rotation = 180;
         break;
       case 'ArrowRight':
-        this.img.src = './public/images/froggy-right.png';
         if (this.posX + this.width < this.canvas.width)
           this.posX += this.game.settings.gridSize;
         else {
@@ -28,9 +27,9 @@ class Froggy extends Sprite {
             else this.posX = 0 - this.game.settings.gridSize * 2;
           }
         }
+        this.rotation = 90;
         break;
       case 'ArrowLeft':
-        this.img.src = './public/images/froggy-left.png';
         if (this.posX > 0) this.posX -= this.game.settings.gridSize;
         else {
           if (this.game.settings.horizontalWrap) {
@@ -38,17 +37,21 @@ class Froggy extends Sprite {
             else this.posX = this.canvas.width + this.game.settings.gridSize;
           }
         }
+        this.rotation = -90;
         break;
       default:
-        this.img.src = './public/images/froggy-up.png';
+        this.rotation = 0;
         return;
     }
     this.game.sounds.froggyJump.play();
     this.game.levels[this.game.levelIndex].checkIfOverLeaf();
   }
 
+  render() {
+    super.render(this.angle);
+  }
+
   reset() {
-    this.img.src = './public/images/froggy-up.png';
     this.posX = (this.canvas.width - this.width) / 2;
     this.posY = this.canvas.height - this.height;
   }

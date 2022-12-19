@@ -110,7 +110,7 @@ const livesDisplay = (nroOfLives) => {
 
   for (let i = 0; i < nroOfLives; i++) {
     const img = document.createElement('img');
-    img.src = './public/images/froggy-up.png';
+    img.src = './public/images/froggy.png';
     img.alt = 'froggy-live';
     livesDisplayDiv.append(img);
   }

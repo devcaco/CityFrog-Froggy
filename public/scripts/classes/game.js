@@ -33,7 +33,7 @@ class Game {
     this.timer = 0;
     this.timerID = null;
     this.sounds = {
-      froggyJump: new Audio('./public/sounds/froggy-jump-2.wav'),
+      froggyJump: new Audio('./public/sounds/froggy-jump-1.wav'),
       froggyCrash: new Audio('./public/sounds/froggy-crash-2.wav'),
       froggyPick: new Audio('./public/sounds/froggy-pick.wav'),
       levelComplete: new Audio('./public/sounds/level-complete.wav'),

@@ -15,6 +15,7 @@ class Sprite {
     this.clipW = clipW || 700;
     this.clipH = clipH || 400;
     this.visible = true;
+    this.rotation = 0;
     this.create();
   }
 
@@ -25,6 +26,16 @@ class Sprite {
 
   render() {
     if (this.img !== null && this.visible) {
+      this.ctx.save();
+      this.ctx.translate(
+        this.posX + this.width / 2,
+        this.posY + this.height / 2
+      );
+      this.ctx.rotate(this.rotation * (Math.PI / 180));
+      this.ctx.translate(
+        -(this.posX + this.width / 2),
+        -(this.posY + this.height / 2)
+      );
       this.ctx.drawImage(
         this.img,
         this.clipX,
@@ -36,6 +47,7 @@ class Sprite {
         this.width,
         this.height
       );
+      this.ctx.restore();
     }
   }
 
