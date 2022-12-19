@@ -54,6 +54,7 @@ class Froggy extends Sprite {
   reset() {
     this.posX = (this.canvas.width - this.width) / 2;
     this.posY = this.canvas.height - this.height;
+    this.rotation = 0;
   }
 
   moveSmooth(direction) {
