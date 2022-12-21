@@ -6,7 +6,7 @@ const renderInitialScreen = (game) => {
   game.ctx.font = '36px Arial';
   game.ctx.textAlign = 'center';
   game.ctx.fillText(
-    'Click or Press (s) to Start!',
+    'Click or Press [space bar] to Start!',
     game.canvas.width / 2,
     game.canvas.height / 2
   );
@@ -20,7 +20,7 @@ const renderGameOverScreen = (game) => {
   game.ctx.font = '26px Arial';
   game.ctx.textAlign = 'center';
   game.ctx.fillText(
-    'GAME OVER! PRESS (R) TO PLAY AGAIN',
+    'GAME OVER! PRESS [R] TO PLAY AGAIN',
     game.canvas.width / 2,
     game.canvas.height / 2
   );

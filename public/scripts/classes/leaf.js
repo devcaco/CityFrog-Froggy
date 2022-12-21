@@ -7,6 +7,7 @@ class Leaf extends Sprite {
     this.move();
   }
   move() {
+    if (this.imgSrc === 'golden-leaf.png') return;
     const grid =
       (this.canvas.width - this.game.settings.gridSize) /
       this.game.settings.gridSize;
@@ -15,6 +16,19 @@ class Leaf extends Sprite {
       getRandomInt(1, 5) * 100 -
       (this.posX < getRandomInt(100, 700) ? this.height : 0);
     this.game.levels[this.game.levelIndex].checkIfOverLeaf();
+  }
+
+  setInterval() {
+    this.intervalID = setInterval(() => {
+      if (this.game.settings.hardMode) {
+        this.move();
+        this.pointValue -= 5;
+      }
+    }, getRandomInt(7000, 10000));
+  }
+
+  clearInterval() {
+    clearInterval(this.intervalID);
   }
 
   render() {

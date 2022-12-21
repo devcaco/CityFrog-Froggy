@@ -5,7 +5,11 @@ const defaultSettings = {
   horizontalWrap: true,
   enableTimer: true,
   enableSounds: true,
+  autoContinue: true,
+  hardMode: false,
   gridSize: 50,
+  gameLoop: true,
+  soundControl: null,
   canvas: {
     container: '#game-canvas-container',
     width: 950,
@@ -33,33 +37,59 @@ class Game {
     this.timer = 0;
     this.timerID = null;
     this.sounds = {
-      froggyJump: new Audio('./public/sounds/froggy-jump-1.wav'),
+      froggyJump: new Audio('./public/sounds/froggy-jump-2.wav'),
       froggyCrash: new Audio('./public/sounds/froggy-crash-2.wav'),
       froggyPick: new Audio('./public/sounds/froggy-pick.wav'),
       levelComplete: new Audio('./public/sounds/level-complete.wav'),
       timesUp: new Audio('./public/sounds/times-up-1.wav'),
     };
     const $this = this;
-    Audio.prototype.play = function () {
-      if (!$this.settings.enableSounds) return;
-      this.__proto__.__proto__.play.call(this.cloneNode(true));
-    };
-    this.keyBind();
+    for (const sound in this.sounds) {
+      this.sounds[sound].play = function () {
+        if ($this.settings.enableSounds) this.cloneNode(true).play();
+      };
+    }
+    this.eventBind();
   }
 
-  keyBind() {
-    window.addEventListener('keydown', (e) => {
+  eventBind() {
+    document.addEventListener('keydown', (e) => {
+      // console.log(this.state);
       if (e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
+      if (e.code === 'KeyS') this.settings.soundControl(true);
       if (this.state === 'playing' && this.animate) this.froggy.move(e.code);
       if (this.state === 'playing' && e.code === 'KeyP') this.pauseGame(false);
       if (this.state === 'paused' && e.code === 'KeyC') this.pauseGame(true);
       if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
-      if (this.state === 'initial' && e.code === 'KeyS') {
-        this.state = 'playing';
-        this.animate = true;
-        this.startLevel();
-        this.gameLoop();
+      if (this.state === 'initial' && e.code === 'Space') this.startLevel();
+      if (
+        this.state === 'levelcomplete' &&
+        !this.settings.autoContinue &&
+        e.code === 'KeyC'
+      ) {
+        // console.log('continue next level');
+        this.levelUp();
       }
+    });
+
+    this.canvas.addEventListener('click', (e) => {
+      if (this.state === 'initial') this.startLevel();
+
+      if (
+        e.clientX > this.canvas.width - 35 &&
+        e.clientY > this.canvas.height - 35
+      ) {
+        this.state === 'paused' ? this.pauseGame(true) : this.pauseGame(false);
+      }
+    });
+
+    this.canvas.addEventListener('mousemove', (e) => {
+      if (
+        e.clientX - 50 > this.canvas.width - 50 &&
+        e.clientY - 150 > this.canvas.height - 50
+      )
+        this.canvas.style.cursor = 'pointer';
+      else this.canvas.style.cursor = 'auto';
     });
   }
 
@@ -85,6 +115,8 @@ class Game {
     this.state = 'playing';
     leafsDisplay(this);
     livesDisplay(this.lives);
+    this.animate = true;
+    this.gameLoop();
   }
 
   endLevel() {
@@ -96,18 +128,29 @@ class Game {
     this.levels.push(new Level(this, 'easy', 3, 4, _));
     this.levels.push(new Level(this, 'medium', 4, 4, _));
     this.levels.push(new Level(this, 'medium', 4, 4, _));
-    this.levels.push(new Level(this, 'easy', 3, 4, _));
+    this.levels.push(new Level(this, 'medium', 5, 4, _));
   }
 
   levelUp() {
+    setTimeout(
+      () => {
+        this.endLevel();
+        this.levelIndex++;
+        this.levelIndex %= 5;
+        this.startLevel();
+      },
+      this.settings.autoContinue ? 1400 : 0
+    );
+  }
+
+  levelComplete() {
+    // this.endLevel();
+
     this.state = 'levelcomplete';
-    this.pauseAnimation(1400);
-    setTimeout(() => {
-      this.endLevel();
-      this.levelIndex++;
-      this.levelIndex %= 5;
-      this.startLevel();
-    }, 1400);
+    this.animate = false;
+    this.levels[this.levelIndex].levelTimer('pause');
+
+    if (this.settings.autoContinue) this.levelUp();
   }
 
   pauseAnimation(time) {
@@ -127,12 +170,15 @@ class Game {
       this.animate = true;
       this.state = 'playing';
       this.levels[this.levelIndex].levelTimer('start');
+      this.levels[this.levelIndex].leafs.forEach((leaf) => leaf.setInterval());
+
       this.gameLoop();
       return;
     }
     this.animate = false;
     this.state = 'paused';
     this.levels[this.levelIndex].levelTimer('pause');
+    this.levels[this.levelIndex].leafs.forEach((leaf) => leaf.clearInterval());
   }
 
   loseLife(message) {
@@ -160,7 +206,6 @@ class Game {
 
   gameLoop() {
     renderBackground(this);
-
     switch (this.state) {
       case 'initial':
         renderInitialScreen(this);

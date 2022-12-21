@@ -25,7 +25,11 @@ const renderBackground = (game) => {
     game.ctx.stroke();
   }
   // Display Current Level Number
-  if (game.state === 'playing' || game.state === 'paused') {
+  if (
+    game.state === 'playing' ||
+    game.state === 'paused' ||
+    game.state === 'gameover'
+  ) {
     game.ctx.fillStyle = 'white';
     game.ctx.font = '18px Arial';
     game.ctx.textAlign = 'right';
@@ -38,7 +42,11 @@ const renderBackground = (game) => {
   }
 
   // Display Current Score
-  if (game.state === 'playing' || game.state === 'paused') {
+  if (
+    game.state === 'playing' ||
+    game.state === 'paused' ||
+    game.state === 'gameover'
+  ) {
     game.ctx.fillStyle = 'white';
     game.ctx.font = '18px Arial';
     game.ctx.textAlign = 'left';
@@ -49,7 +57,7 @@ const renderBackground = (game) => {
   // Display Timer
   if (
     (game.state === 'playing' || game.state === 'paused') &&
-    game.settings.enableTimer
+    game.settings.hardMode
   ) {
     game.ctx.fillStyle = 'white';
     game.ctx.font = '18px Arial';
@@ -59,6 +67,33 @@ const renderBackground = (game) => {
       `Time Left: - ${(game.levels[game.levelIndex].timer / 10).toFixed(1)}`,
       15,
       game.canvas.height - 15
+    );
+  }
+  // Display Pause/Play Buttons
+  const pauseBtn = new Image();
+  const playBtn = new Image();
+  pauseBtn.src = `./public/images/icons/pause.png`;
+  playBtn.src = `./public/images/icons/play.png`;
+
+  if (game.state === 'paused') {
+    playBtn.onload = renderBtn(game, playBtn);
+  } else {
+    pauseBtn.onload = renderBtn(game, pauseBtn);
+  }
+};
+
+const renderBtn = (game, btn) => {
+  if (game.state !== 'initial' && game.state !== 'gameover') {
+    game.ctx.drawImage(
+      btn,
+      0,
+      0,
+      300,
+      300,
+      game.canvas.width - 50,
+      game.canvas.height - 40,
+      35,
+      35
     );
   }
 };

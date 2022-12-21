@@ -21,7 +21,7 @@ class Level {
   }
 
   levelTimer(mode) {
-    if (!this.game.settings.enableTimer) return;
+    if (!this.game.settings.hardMode) return;
 
     if (mode === 'start') {
       this.timerID = setInterval(() => {
@@ -87,10 +87,6 @@ class Level {
       for (let i = 0; i < this.nroOfLeafs; i++) {
         const leaf = new Leaf(this.game, _, 50);
         this.leafs.push(leaf);
-        this.leafs.intervalID = setInterval(() => {
-          leaf.move();
-          leaf.pointValue -= 5;
-        }, getRandomInt(7000, 10000));
       }
       const grid =
         (this.game.canvas.width - this.game.settings.gridSize) /
@@ -113,7 +109,7 @@ class Level {
         this.game.score += leaf.pointValue;
 
         if (leaf.imgSrc === 'golden-leaf.png') {
-          this.game.levelUp();
+          this.game.levelComplete();
           this.game.sounds.levelComplete.play();
         } else {
           this.leafsCollected.push(leaf);
