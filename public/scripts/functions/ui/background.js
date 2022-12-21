@@ -121,7 +121,6 @@ const leafsDisplay = (game) => {
     if (game.levels[game.levelIndex].leafsCollected.length) {
       const leafsImg = leafsDisplayDiv.querySelectorAll('img');
       const collectedLeafs = game.levels[game.levelIndex].leafsCollected;
-      console.log(collectedLeafs.length);
       collectedLeafs.forEach((leaf, index) =>
         leafsImg[index].classList.remove('greyscaled')
       );

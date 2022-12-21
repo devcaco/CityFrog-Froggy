@@ -54,7 +54,6 @@ class Game {
 
   eventBind() {
     document.addEventListener('keydown', (e) => {
-      // console.log(this.state);
       if (e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
       if (e.code === 'KeyS') this.settings.soundControl(true);
       if (this.state === 'playing' && this.animate) this.froggy.move(e.code);
@@ -67,7 +66,6 @@ class Game {
         !this.settings.autoContinue &&
         e.code === 'KeyC'
       ) {
-        // console.log('continue next level');
         this.levelUp();
       }
     });
@@ -144,8 +142,6 @@ class Game {
   }
 
   levelComplete() {
-    // this.endLevel();
-
     this.state = 'levelcomplete';
     this.animate = false;
     this.levels[this.levelIndex].levelTimer('pause');
@@ -188,13 +184,13 @@ class Game {
     livesDisplay(this.lives);
     this.pauseAnimation(500);
     if (!this.lives) {
-      this.levels[this.levelIndex].reset();
+      this.endLevel();
       this.state = 'gameover';
     }
   }
 
   reset() {
-    this.lives = 4;
+    this.lives = this.settings.nroOfLives;
     this.score = 0;
     this.levelIndex = 0;
     this.froggy.reset();

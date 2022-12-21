@@ -3,7 +3,7 @@ class Level {
     game,
     dificulty = 'easy',
     activeLanes,
-    nroOfLeafs = 3,
+    nroOfLeafs = 4,
     timeLimit = 300
   ) {
     this.game = game;
@@ -87,6 +87,7 @@ class Level {
       for (let i = 0; i < this.nroOfLeafs; i++) {
         const leaf = new Leaf(this.game, _, 50);
         this.leafs.push(leaf);
+        if (this.game.settings.hardMode) leaf.setInterval();
       }
       const grid =
         (this.game.canvas.width - this.game.settings.gridSize) /
