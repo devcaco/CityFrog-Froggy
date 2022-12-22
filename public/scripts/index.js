@@ -1,15 +1,19 @@
 window.addEventListener('load', () => {
   console.log('scripts are connected');
 
+  //OVERRIDES DEFAULT SETTINGS DEFINED IN GAME CLASS
   const settings = {
     canvas: {
       container: '#game-canvas-container',
     },
     nroOfLives: 5,
     enableTimer: false,
+    gameLoop: false,
     soundControl: toggleSound,
+    modalControl: toggleModal,
   };
 
+  //NEW INSTANCE OF OUR GAME CLASS
   const game = new Game(settings);
   game.mount();
 
@@ -49,7 +53,7 @@ window.addEventListener('load', () => {
     '.game__container--header--right-sound img'
   );
 
-  //EVENT LISTENERS
+  //DOM ELEMENTS EVENT LISTENERS
   settingsBtn.addEventListener('click', () => {
     toggleModal('settings');
   });
@@ -78,17 +82,18 @@ window.addEventListener('load', () => {
       case 'welcome':
         renderWelcome();
         break;
+      case 'win':
+        renderWin();
+        break;
       case 'settings':
-        // default:
+      default:
         renderSettings();
         break;
     }
   }
 
   function changeGameSetting(setting, value) {
-    if (game) {
-      game.settings[setting] = value;
-    }
+    if (game) game.settings[setting] = value;
     toggleSound();
   }
 
@@ -102,6 +107,52 @@ window.addEventListener('load', () => {
 
     const soundSlider = modalBody.querySelector('#enableSounds');
     if (soundSlider && set) soundSlider.checked = game.settings.enableSounds;
+  }
+
+  function renderWin() {
+    modalBody.innerHTML = '';
+    modalHeaderTitle.innerHTML = 'YOU WIN';
+    modalLogo.src = './public/images/win-logo.png';
+    modalLogo.alt = 'Froggy Mastered All Levels';
+    modalLogo.id = 'body-modal-logo-win';
+    modalLogoContainer.innerHTML = '';
+    modalLogoContainer.appendChild(modalLogo);
+    modalCloseBtn.classList.add('hidden');
+
+    const winHTML = `
+    <div class="game__container--body--modal--body-win">
+        <div class="game__container--body--modal--body--win-title">
+          Froggy Master
+        </div>
+        <div class="game__container--body--modal--body--win-points">
+          POINTS: ${game.score}
+        </div>
+        <div class="game__container--body--modal--body--win-subtext">
+          Congratulations, you finished and mastered all 6 levels.
+        </div>
+        <div class="game__container--body--modal--body--win-leafs">
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+          <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
+        </div>
+        <div class="game__container--body--modal--body--win-challenge">
+          NEXT CHALLENGE: Play in hard mode
+        </div>
+      </div>
+      <div class="game__container--body--modal--body--win-footer">
+        play again
+      </div>
+    `;
+
+    modalBody.innerHTML = winHTML;
+
+    const playAgainBtn = modalBody.querySelector(
+      '.game__container--body--modal--body--win-footer'
+    );
+    playAgainBtn.addEventListener('click', toggleModal);
   }
 
   function renderWelcome() {
@@ -119,8 +170,8 @@ window.addEventListener('load', () => {
         <div class="game__container--body--modal--body--welcome-sec1">
           <span>FROGGY</span>
           <p>
-            Hi, I'm Froggy and my goal is to cross the busy highway while
-            collecting 4 leafs to take back to my cove
+            Hi! I'm Froggy, my goal for each level is to cross this busy highway and
+            collect 4 leafs to take back to my cove
           </p>
           <p>Finish all 5 levels and you'll be a Froggy Master!</p>
         </div>

@@ -10,6 +10,7 @@ const defaultSettings = {
   gridSize: 50,
   gameLoop: true,
   soundControl: null,
+  modalControl: null,
   canvas: {
     container: '#game-canvas-container',
     width: 950,
@@ -127,6 +128,7 @@ class Game {
     this.levels.push(new Level(this, 'medium', 4, 4, _));
     this.levels.push(new Level(this, 'medium', 4, 4, _));
     this.levels.push(new Level(this, 'medium', 5, 4, _));
+    this.levels.push(new Level(this, 'hard', 3, 4, _));
   }
 
   levelUp() {
@@ -134,7 +136,7 @@ class Game {
       () => {
         this.endLevel();
         this.levelIndex++;
-        this.levelIndex %= 5;
+        this.levelIndex %= this.settings.nroOfLevels;
         this.startLevel();
       },
       this.settings.autoContinue ? 1400 : 0
@@ -145,18 +147,27 @@ class Game {
     this.state = 'levelcomplete';
     this.animate = false;
     this.levels[this.levelIndex].levelTimer('pause');
+    console.log('levelindex', this.levelIndex, this.settings.nroOfLevels);
+    if (
+      this.levelIndex + 1 === this.settings.nroOfLevels &&
+      !this.settings.gameLoop
+    ) {
+      console.log('endingGame');
+      this.endGame();
+      return;
+    }
 
     if (this.settings.autoContinue) this.levelUp();
   }
 
-  pauseAnimation(time) {
+  pauseAnimation(time, callback = null) {
     this.animate = false;
     this.levels[this.levelIndex].levelTimer('pause');
-
     setTimeout(() => {
       this.animate = true;
       if (this.state !== 'gameover' && this.state !== 'levelcomplete')
         this.levels[this.levelIndex].levelTimer('start');
+      if (callback) callback();
       this.gameLoop();
     }, time || 1000);
   }
@@ -186,6 +197,16 @@ class Game {
     if (!this.lives) {
       this.endLevel();
       this.state = 'gameover';
+    }
+  }
+
+  endGame() {
+    this.state = 'gameover';
+    if (this.settings.modalControl) {
+      console.log('win game popup should appear');
+      this.pauseAnimation(700, () => {
+        this.settings.modalControl('win');
+      });
     }
   }
 
