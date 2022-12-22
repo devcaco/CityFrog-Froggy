@@ -112,8 +112,10 @@ class Level {
         if (leaf.imgSrc === 'golden-leaf.png') {
           this.game.levelComplete();
           this.game.sounds.levelComplete.play();
+          this.game.leafsCollected.golden.push(leaf);
         } else {
           this.leafsCollected.push(leaf);
+          this.game.leafsCollected.green.push(leaf);
           this.game.sounds.froggyPick.play();
         }
 

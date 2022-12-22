@@ -37,6 +37,10 @@ class Game {
     this.froggy = new Froggy(this);
     this.timer = 0;
     this.timerID = null;
+    this.leafsCollected = {
+      green: [],
+      golden: [],
+    };
     this.sounds = {
       froggyJump: new Audio('./public/sounds/froggy-jump-2.wav'),
       froggyCrash: new Audio('./public/sounds/froggy-crash-2.wav'),
@@ -152,8 +156,7 @@ class Game {
       this.levelIndex + 1 === this.settings.nroOfLevels &&
       !this.settings.gameLoop
     ) {
-      console.log('endingGame');
-      this.endGame();
+      this.endGame(true);
       return;
     }
 
@@ -194,18 +197,15 @@ class Game {
     this.froggy.reset();
     livesDisplay(this.lives);
     this.pauseAnimation(500);
-    if (!this.lives) {
-      this.endLevel();
-      this.state = 'gameover';
-    }
+    if (!this.lives) this.endGame();
   }
 
-  endGame() {
+  endGame(win) {
     this.state = 'gameover';
+    this.endLevel();
     if (this.settings.modalControl) {
-      console.log('win game popup should appear');
       this.pauseAnimation(700, () => {
-        this.settings.modalControl('win');
+        this.settings.modalControl(win ? 'win' : 'gameover');
       });
     }
   }
@@ -216,6 +216,8 @@ class Game {
     this.levelIndex = 0;
     this.froggy.reset();
     this.levels = [];
+    this.leafsCollected.green = [];
+    this.leafsCollected.golden = [];
     this.state = 'initial';
     this.animate = false;
     this.start();
@@ -225,6 +227,7 @@ class Game {
     renderBackground(this);
     switch (this.state) {
       case 'initial':
+        renderLevelItems(this);
         renderInitialScreen(this);
         break;
       case 'playing':

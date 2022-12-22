@@ -85,6 +85,9 @@ window.addEventListener('load', () => {
       case 'win':
         renderWin();
         break;
+      case 'gameover':
+        renderGameOver();
+        break;
       case 'settings':
       default:
         renderSettings();
@@ -93,6 +96,7 @@ window.addEventListener('load', () => {
   }
 
   function changeGameSetting(setting, value) {
+    console.log('changing settings');
     if (game) game.settings[setting] = value;
     toggleSound();
   }
@@ -229,6 +233,57 @@ window.addEventListener('load', () => {
     letsPlayBtn.addEventListener('click', toggleModal);
   }
 
+  function renderGameOver() {
+    modalBody.innerHTML = '';
+    modalHeaderTitle.innerHTML = 'GAMEOVER';
+    modalLogo.src = './public/images/gameover-logo.png';
+    modalLogo.alt = 'Froggy-Settings';
+    modalLogo.id = 'body-modal-logo-gameover';
+    modalLogoContainer.innerHTML = '';
+    modalLogoContainer.appendChild(modalLogo);
+    modalCloseBtn.classList.add('hidden');
+    // modalHeader.classList.add('black_bg');
+
+    const gameOverHTML = `
+    <div class="game__container--body--modal--body-gameover">
+      <div class="game__container--body--modal--body--gameover-title">
+        <p>Froggy is out of lives! It needs time to recover</p>
+        <p>Here is your game summary:</p>
+      </div>
+      <div class="game__container--body--modal--body--gameover-leafs">
+        <div
+          class="game__container--body--modal--body--gameover--leafs-row"
+        >
+          <div class="game__container--body--modal--body--gameover--leafs--row-img"><img src="./public/images/leaf.png" alt="froggy green leaf" /></div>
+          <div class="game__container--body--modal--body--gameover--leafs--row-title">GREEN LEAFS</div>
+          <div class="game__container--body--modal--body--gameover--leafs--row-amount">${game.leafsCollected.green.length}</div>
+        </div>
+        <div
+          class="game__container--body--modal--body--gameover--leafs-row"
+        >
+          <div class="game__container--body--modal--body--gameover--leafs--row-img"><img src="./public/images/golden-leaf.png" alt="froggy golden leaf" /></div>
+          <div class="game__container--body--modal--body--gameover--leafs--row-title">GOLDEN LEAFS</div>
+          <div class="game__container--body--modal--body--gameover--leafs--row-amount">${game.leafsCollected.golden.length}</div>
+        </div>
+      </div>
+      <div class="game__container--body--modal--body--gameover-points">
+        ${game.score} <br />
+        TOTAL POINTS
+      </div>
+    </div>
+    <div class="game__container--body--modal--body--gameover-footer">
+      Play Again
+    </div>
+    `;
+
+    modalBody.innerHTML = gameOverHTML;
+
+    const playAgainBtn = modalBody.querySelector(
+      '.game__container--body--modal--body--gameover-footer'
+    );
+    playAgainBtn.addEventListener('click', toggleModal);
+  }
+
   function renderSettings() {
     modalBody.innerHTML = '';
     modalHeaderTitle.innerHTML = 'SETTINGS';
@@ -237,7 +292,10 @@ window.addEventListener('load', () => {
     modalLogo.id = 'body-modal-logo-settings';
     modalLogoContainer.innerHTML = '';
     modalLogoContainer.appendChild(modalLogo);
+    modalCloseBtn.classList.remove('hidden');
 
+    const settingsDiv = document.createElement('div');
+    settingsDiv.classList.add('game__container--body--modal--body-settings');
     let settingsArr = [
       {
         id: 'enableSounds',
@@ -290,8 +348,15 @@ window.addEventListener('load', () => {
         </div>
       </div>
       `;
-      modalBody.innerHTML += settingsRow;
+      settingsDiv.innerHTML += settingsRow;
     });
+
+    modalBody.appendChild(settingsDiv);
+    modalBody.innerHTML += `
+    <div
+        class="game__container--body--modal--body--settings-footer"
+      >SAVE</div>
+    `;
 
     const settingsInput = modalBody.querySelectorAll('input');
 
@@ -302,5 +367,10 @@ window.addEventListener('load', () => {
     );
     const soundSlider = modalBody.querySelector('#enableSounds');
     soundSlider.checked = game.settings.enableSounds;
+
+    const saveBtn = modalBody.querySelector(
+      '.game__container--body--modal--body--settings-footer'
+    );
+    saveBtn.addEventListener('click', toggleModal);
   }
 });
