@@ -7,7 +7,6 @@ window.addEventListener('load', () => {
       container: '#game-canvas-container',
     },
     nroOfLives: 5,
-    enableTimer: false,
     gameLoop: false,
     soundControl: toggleSound,
     modalControl: toggleModal,
@@ -132,7 +131,9 @@ window.addEventListener('load', () => {
           POINTS: ${game.score}
         </div>
         <div class="game__container--body--modal--body--win-subtext">
-          Congratulations, you finished and mastered all 6 levels.
+          Congratulations, you finished and mastered all ${
+            game.settings.nroOfLevels
+          } levels.
         </div>
         <div class="game__container--body--modal--body--win-leafs">
           <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
@@ -143,7 +144,7 @@ window.addEventListener('load', () => {
           <img src="./public/images/golden-leaf.png" alt="froggy-golder-leaf" />
         </div>
         <div class="game__container--body--modal--body--win-challenge">
-          NEXT CHALLENGE: Play in hard mode
+         ${!game.settings.hardMode ? 'NEXT CHALLENGE: Play in HARD MODE' : ''} 
         </div>
       </div>
       <div class="game__container--body--modal--body--win-footer">

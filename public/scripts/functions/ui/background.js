@@ -35,7 +35,7 @@ const renderBackground = (game) => {
     game.ctx.textAlign = 'right';
     game.ctx.textBaseline = 'top';
     game.ctx.fillText(
-      `Level - ${game.levelIndex + 1}`,
+      `Level - ${game.levelIndex + 1} of ${game.settings.nroOfLevels}`,
       game.canvas.width - 15,
       15
     );

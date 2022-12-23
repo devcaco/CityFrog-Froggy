@@ -1,7 +1,7 @@
 const defaultSettings = {
   nroOfLanes: 5,
   nroOfLives: 4,
-  nroOfLevels: 6,
+  nroOfLevels: 5,
   horizontalWrap: true,
   enableTimer: true,
   enableSounds: true,
@@ -132,7 +132,7 @@ class Game {
     this.levels.push(new Level(this, 'medium', 4, 4, _));
     this.levels.push(new Level(this, 'medium', 4, 4, _));
     this.levels.push(new Level(this, 'medium', 5, 4, _));
-    this.levels.push(new Level(this, 'hard', 3, 4, _));
+    // this.levels.push(new Level(this, 'hard', 3, 4, _));
   }
 
   levelUp() {
