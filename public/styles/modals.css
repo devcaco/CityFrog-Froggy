@@ -20,10 +20,15 @@
   -moz-box-shadow: 10px 10px 66px 19px rgba(0, 0, 0, 0.75);
 }
 
+.game__container--body--modal-header a {
+  text-decoration: none;
+  border: 0;
+}
+
 .game__container--body--modal-header {
   position: relative;
   width: 100%;
-  height: 80px;
+  height: 70px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -31,6 +36,7 @@
   font-weight: bold;
   background-color: rgb(3, 97, 58);
   color: #fff;
+  padding-bottom: 10px;
 }
 
 .game__container--body--modal--header-logo img {
@@ -52,9 +58,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
-/* ---------------- MODALS HEADER IMAGE ------------------ */
+/* ---------------- MODALS HEADER IMAGES ------------------ */
 
 #body-modal-logo-settings {
   top: -140px;
@@ -73,12 +80,19 @@
   left: -20px;
 }
 
+#body-modal-logo-credits {
+  height: 200px;
+  top: -150px;
+  left: -5px;
+}
+
 #body-modal-logo-gameover {
   height: 260px;
   top: -168px;
   left: -20px;
 }
 
+.game__container--body--modal--body-credits,
 .game__container--body--modal--body-gameover,
 .game__container--body--modal--body-win,
 .game__container--body--modal--body-settings,
@@ -262,6 +276,69 @@
   font-weight: bold;
   font-size: 30px;
   text-align: center;
+}
+
+/* ---------------- CREDITS MODAL ------------------ */
+
+.game__container--body--modal--body-credits {
+  /* background-color: rebeccapurple; */
+  margin: 20px auto;
+  width: 100%;
+  font-size: 16px;
+}
+.game__container--body--modal--body--credits-version {
+  align-self: center;
+  text-align: center;
+  height: 80px;
+  font-weight: bold;
+  font-size: 20px;
+}
+.game__container--body--modal--body--credits-info {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.game__container--body--modal--body--credits--info-tech {
+  font-weight: bold;
+  /* align-self: center; */
+  justify-self: center;
+  text-align: center;
+}
+.game__container--body--modal--body--credits--info-tech li {
+  text-decoration: none;
+  font-weight: normal;
+  list-style: none;
+}
+.game__container--body--modal--body--credits--info-credits p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.game__container--body--modal--body--credits--info-credits span {
+  font-weight: normal;
+}
+.game__container--body--modal--body--credits-github img {
+  height: 60px;
+}
+.game__container--body--modal--body--credits-github {
+  margin: 30px 0;
+  text-align: center;
+}
+.game__container--body--modal--body--credits-author {
+  margin-bottom: 20px;
+}
+.game__container--body--modal--body--credits-ironhack p,
+.game__container--body--modal--body--credits-author p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  text-align: center;
+}
+.game__container--body--modal--body--credits-ironhack span,
+.game__container--body--modal--body--credits-author span {
+  font-weight: normal;
 }
 
 /* ---------------- MODALS FOOTER ------------------ */

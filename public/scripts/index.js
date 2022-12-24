@@ -21,6 +21,9 @@ window.addEventListener('load', () => {
     '.game__container--header--left-settings > img:first-child'
   );
   const infoBtn = document.querySelector(
+    '.game__container--header--left-settings > img:nth-child(3)'
+  );
+  const helpBtn = document.querySelector(
     '.game__container--header--left-settings > img:nth-child(2)'
   );
   const closeBtn = document.querySelector(
@@ -57,6 +60,9 @@ window.addEventListener('load', () => {
     toggleModal('settings');
   });
   infoBtn.addEventListener('click', () => {
+    toggleModal('credits');
+  });
+  helpBtn.addEventListener('click', () => {
     toggleModal('welcome');
   });
   closeBtn.addEventListener('click', toggleModal);
@@ -87,6 +93,9 @@ window.addEventListener('load', () => {
       case 'gameover':
         renderGameOver();
         break;
+      case 'credits':
+        renderCredits();
+        break;
       case 'settings':
       default:
         renderSettings();
@@ -110,6 +119,68 @@ window.addEventListener('load', () => {
 
     const soundSlider = modalBody.querySelector('#enableSounds');
     if (soundSlider && set) soundSlider.checked = game.settings.enableSounds;
+  }
+
+  function renderCredits() {
+    modalBody.innerHTML = '';
+    modalHeaderTitle.innerHTML = 'CREDITS';
+    modalLogo.src = './public/images/credits-logo.png';
+    modalLogo.alt = 'CityFrog Froggy Credits';
+    modalLogo.id = 'body-modal-logo-credits';
+    modalLogoContainer.innerHTML = '';
+    modalLogoContainer.appendChild(modalLogo);
+    modalCloseBtn.classList.remove('hidden');
+
+    const creditsHTML = `
+    <div class="game__container--body--modal--body-credits">
+      <div class="game__container--body--modal--body--credits-version">
+        Version <br />
+        1.0
+      </div>
+      <div class="game__container--body--modal--body--credits-info">
+        <div
+          class="game__container--body--modal--body--credits--info-tech"
+        >
+          Technologies:
+          <li>Javascript</li>
+          <li>HTML5</li>
+          <li>CSS3</li>
+        </div>
+        <div
+          class="game__container--body--modal--body--credits--info-credits"
+        >
+          <p>
+            Graphics provided by: <br />
+            <span>stock.adobe.com</span>
+          </p>
+          <p>
+            Sounds provided by: <br />
+            <span>zapslat.com</span>
+          </p>
+        </div>
+      </div>
+      <div class="game__container--body--modal--body--credits-github">
+        <a
+          href="https://github.com/devcaco/CityFrog-Froggy"
+          target="_blank"
+          ><img
+            src="./public/images/github-logo.png"
+            alt="Contribute in Github"
+        /></a>
+      </div>
+      <div class="game__container--body--modal--body--credits-author">
+        <p>
+          Developed by <br />
+          <span>Carlos Sosa (devcaco)</span>
+        </p>
+      </div>
+      <div class="game__container--body--modal--body--credits-ironhack">
+        <p>IronHack <br /><span>Miami, Fl, Dec 2022</span></p>
+      </div>
+    </div>
+    `;
+
+    modalBody.innerHTML = creditsHTML;
   }
 
   function renderWin() {
