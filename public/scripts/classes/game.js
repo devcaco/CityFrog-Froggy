@@ -66,6 +66,7 @@ class Game {
       if (this.state === 'paused' && e.code === 'KeyC') this.pauseGame(true);
       if (this.state === 'gameover' && e.code === 'KeyR') this.reset();
       if (this.state === 'initial' && e.code === 'Space') this.startLevel();
+      if(this.state === 'paused' && e.code === 'KeyR') this.endGame(false);
       if (
         this.state === 'levelcomplete' &&
         !this.settings.autoContinue &&
